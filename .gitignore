@@ -1,0 +1,105 @@
+# Rider project settings
+.idea/
+*.iml
+
+# Rider caches
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/shelf/
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.local.xml
+.idea/**/gradle.xml
+.idea/**/uiDesigner.xml
+.idea/**/markdown-navigator.xml
+.idea/**/markdown-navigator/
+.idea/**/libraries/
+.idea/**/vcs.xml
+
+# User-specific environment files
+*.iws
+
+####################################
+# .NET / Visual Studio / MSBuild   #
+####################################
+
+# Build output
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+TestResults/
+
+# Configuration folders
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+*.nuget.props
+*.nuget.targets
+
+# Publish output
+publish/
+app.publish/
+
+####################################
+# ASP.NET Core and EF Core         #
+####################################
+
+# Local database files
+*.db
+*.ldb
+*.sqlite
+*.sqlite3
+
+# ASP.NET Core secret storage
+secrets.json
+
+# EF Core snapshot (optional)
+*Migrations/*ModelSnapshot.cs
+
+####################################
+# IDE / Editor helpers              #
+####################################
+
+# VS Code (optional)
+.vscode/
+
+# ReSharper (if installed with Rider)
+_ReSharper*/
+*.DotSettings.user
+
+####################################
+# System / OS files                 #
+####################################
+
+# Windows
+Thumbs.db
+ehthumbs.db
+desktop.ini
+
+# macOS
+.DS_Store
+
+# Logs and temp files
+*.log
+*.tmp
+*.temp
+*.bak
+*.cache
+
+####################################
+# Node (if used in project)         #
+####################################
+
+node_modules/
+npm-debug.log
+yarn-debug.log
+yarn-error.log
