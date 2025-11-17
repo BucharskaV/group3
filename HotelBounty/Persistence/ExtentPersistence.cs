@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using System.Xml.Serialization;
 using HotelBounty.Employees;
+using HotelBounty.Rooms;
 
 namespace HotelBounty.Persistence;
 
@@ -10,7 +11,8 @@ public class ExtentPersistence
     {
         var container = new ExtentContainer()
         {
-            Employees = new List<Employee>(Employee.GetExtent())
+            Employees = new List<Employee>(Employee.GetExtent()),
+            Rooms = new List<Room>(Room.GetExtent())
         };
 
         try
@@ -23,9 +25,11 @@ public class ExtentPersistence
                 serializer.Serialize(writer, container);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            throw new Exception("Failed to save extent");
+            Console.WriteLine("Serialization failed: " + ex.Message);
+            Console.WriteLine(ex.StackTrace);
+            throw;
         }
     }
 
@@ -42,45 +46,49 @@ public class ExtentPersistence
             catch (FileNotFoundException)
             {
                 Employee.ClearExtent();
+                Room.ClearExtent();
                 return false;
             }
 
             Employee.ClearExtent();
+            Room.ClearExtent();
 
             var serializer = new XmlSerializer(typeof(ExtentContainer));
+            
             using (var reader = new XmlTextReader(file))
             {
                 ExtentContainer container;
                 try
                 {
                     container = (ExtentContainer)serializer.Deserialize(reader);
+                    
                     Employee.FixIdCounter(); 
+                    Room.FixIdCounter();
                 }
                 catch (InvalidCastException)
                 {
                     Employee.ClearExtent();
+                    Room.ClearExtent();
                     return false;
                 }
                 catch (Exception)
                 {
                     Employee.ClearExtent();
+                    Room.ClearExtent();
                     return false;
                 }
 
                 if (container == null)
                 {
                     Employee.ClearExtent();
+                    Room.ClearExtent();
                     return false;
                 }
 
-                if (container.Employees != null)
-                {
+                if (container.Employees != null) 
                     Employee.ReplaceExtent(container.Employees);
-                }
-                else
-                {
-                    Employee.ClearExtent();
-                }
+                if (container.Rooms != null) 
+                    Room.ReplaceExtent(container.Rooms);
             }
 
             return true;
