@@ -10,7 +10,8 @@ public class PetFriendly : Room
         get => _petFeeders;
         set
         {
-            if(!string.IsNullOrEmpty(value)) throw new ArgumentException("The pet feeders cannot be null or empty.");
+            if(string.IsNullOrEmpty(value)) 
+                throw new ArgumentException("The pet feeders cannot be null or empty.");
             _petFeeders = value;
         }
     }
