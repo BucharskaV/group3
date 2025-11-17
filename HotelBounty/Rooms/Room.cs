@@ -6,7 +6,7 @@ namespace HotelBounty.Rooms;
 [XmlInclude(typeof(PetFriendly))]
 [XmlInclude(typeof(NoPets))]
 [XmlInclude(typeof(Deluxe))]
-[XmlInclude(typeof(Standart))]
+[XmlInclude(typeof(Standard))]
 public class Room
 {
     private static int nextId = 1;
@@ -20,7 +20,7 @@ public class Room
         get => _occupancy;
         set
         {
-            if(value < 0)
+            if(value <= 0)
                 throw new ArgumentException("Occupancy value cannot be less than 0");
             _occupancy = value;
         }
@@ -151,5 +151,17 @@ public class Room
     {
         _roomList.Clear();
     }
-
+    
+    internal static void FixIdCounter()
+    {
+        if (_roomList.Count == 0)
+        {
+            nextId = 1;
+        }
+        else
+        {
+            var maxId = _roomList.Max(g => g.Id);
+            nextId = maxId + 1;
+        }
+    }
 }
