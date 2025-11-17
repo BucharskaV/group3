@@ -26,7 +26,7 @@ public class Receptionist : Employee
     }
     
     private List<string> _languages = new List<string>();
-    public ReadOnlyCollection<string> Languages => _languages.AsReadOnly();
+    public List<string> Languages { get; set; } = new List<string>();
     
     public void SetLanguages(IEnumerable<string> languages)
     {

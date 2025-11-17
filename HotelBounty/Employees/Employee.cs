@@ -24,7 +24,7 @@ public abstract class Employee
             _minSalary = value;
         }
     }
-    public int Id { get; private set; }
+    public int Id { get; set; }
 
     public string _name;
     public string Name
@@ -69,7 +69,9 @@ public abstract class Employee
         }
     }
     
+    
     private Employee? _supervisor;
+    
     public Employee? Supervisor
     {
         get => _supervisor;
@@ -81,8 +83,10 @@ public abstract class Employee
         }
     }
     
+    
     private HotelBlock _hotelBlock;
 
+    
     public HotelBlock HotelBlock
     {
         get => _hotelBlock;

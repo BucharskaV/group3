@@ -2,6 +2,7 @@
 
 namespace HotelBounty;
 
+[Serializable]
 public class HotelBlock
 {
     private List<Employee> _employees = new List<Employee>();
