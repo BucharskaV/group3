@@ -1,0 +1,155 @@
+using System.Xml.Serialization;
+
+namespace HotelBounty.Rooms;
+
+[Serializable]
+[XmlInclude(typeof(PetFriendly))]
+[XmlInclude(typeof(NoPets))]
+[XmlInclude(typeof(Deluxe))]
+[XmlInclude(typeof(Standart))]
+public class Room
+{
+    private static int nextId = 1;
+
+    public int Id { get; private set; }
+
+    public  int _occupancy;
+
+    public int Occupancy
+    {
+        get => _occupancy;
+        set
+        {
+            if(value < 0)
+                throw new ArgumentException("Occupancy value cannot be less than 0");
+            _occupancy = value;
+        }
+    }
+    
+    public double _price;
+
+    public double Price
+    {
+        get => _price;
+        set
+        {
+            if(value < 0)
+                throw new ArgumentException("Price value cannot be less than 0");
+            _price = value;
+        }
+    }
+
+    public string? _climatization;
+    
+    public string? Climatization
+    {
+        get => _climatization;
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                if (value.Length > 50)
+                    throw new ArgumentException("Description of climatization availability cannot be longer than 50 characters");
+            }
+            _climatization = value; 
+        }
+    }
+
+    public string? _isCleaned;
+
+    public string? IsCleaned
+    {
+        get => _isCleaned;
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                if(value.Length > 50)
+                    throw new ArgumentException("Description of room state cannot be longer than 50 characters");
+            }
+            _isCleaned = value;
+        }
+    }
+
+    public string? _isAvailable;
+
+    public string? IsAvailable
+    {
+        get => _isAvailable;
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                if(value.Length > 50)
+                    throw new ArgumentException("Description of room state cannot be longer than 50 characters");
+                _isAvailable = value;
+            }
+        }
+    }
+    
+    private Hotel _hotel;
+
+    public Hotel Hotel
+    {
+        get => _hotel;
+        set
+        {
+            if(value == null) throw new ArgumentNullException("The Hotel cannot be null");
+            _hotel = value;
+        }
+    }
+    
+    public Room() { }
+
+    public Room(int occupancy, double price, string climatization, string isCleaned, string isAvailable)
+    { 
+        Id = nextId++;
+        Occupancy = occupancy;
+        Price = price;
+        Climatization = climatization;
+        IsCleaned = isCleaned;
+        IsAvailable = isAvailable;
+        
+        AddRoom(this);
+    }
+    
+    
+    private static List<Room> _roomList = new List<Room>();
+    
+    public static List<Room> GetListOfAvailableRooms()
+    {
+        return _roomList
+            .Where(r => r.IsAvailable != null && r.IsAvailable.Equals("Yes", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    public static List<Room> GetListOfRoomsToClean()
+    {
+        return _roomList
+            .Where(r => r.IsCleaned != null && r.IsCleaned.Equals("No", StringComparison.OrdinalIgnoreCase))
+            .ToList();
+    }
+
+    public static IReadOnlyList<Room> GetExtent()
+    {
+        return _roomList.AsReadOnly();
+    }
+
+    public static void AddRoom(Room r)
+    {
+        if (r == null) throw new ArgumentNullException(nameof(r));
+        _roomList.Add(r);
+    }
+
+    internal static void ReplaceExtent(List<Room> rooms)
+    {
+        if (rooms == null) throw new ArgumentNullException(nameof(rooms));
+        _roomList = rooms;
+    }
+
+    internal static void ClearExtent()
+    {
+        _roomList.Clear();
+    }
+
+}
