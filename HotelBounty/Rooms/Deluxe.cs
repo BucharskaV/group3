@@ -12,8 +12,6 @@ public class Deluxe : Room
     
     public List<string> MiniBarFilling { set; get; } = new List<string>();
     
-    [XmlArray("MiniBarFilling")]
-    [XmlArrayItem("Item")]
     public List<string> MiniBarFillingSerializable
     {
         get => _minibarFilling;
