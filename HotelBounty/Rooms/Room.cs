@@ -11,9 +11,9 @@ public class Room
 {
     private static int nextId = 1;
 
-    public int Id { get; private set; }
+    public int Id { get; set; }
 
-    public  int _occupancy;
+    public int _occupancy;
 
     public int Occupancy
     {
