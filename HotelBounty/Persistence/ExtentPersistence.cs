@@ -1,6 +1,10 @@
 ﻿using System.Xml;
 using System.Xml.Serialization;
+using HotelBounty.Billing;
+using HotelBounty.Bookings;
+using HotelBounty.ComplexAttributes;
 using HotelBounty.Employees;
+using HotelBounty.Enums;
 using HotelBounty.Rooms;
 
 namespace HotelBounty.Persistence;
@@ -12,7 +16,14 @@ public class ExtentPersistence
         var container = new ExtentContainer()
         {
             Employees = new List<Employee>(Employee.GetExtent()),
-            Rooms = new List<Room>(Room.GetExtent())
+            Rooms = new List<Room>(Room.GetExtent()),
+            HotelBlocks = new List<HotelBlock>(HotelBlock.GetExtent()),
+            Addresses = new List<Address>(Address.GetExtent()),
+            Hotels = new List<Hotel>(Hotel.GetExtent()),
+            Bookings = new List<Booking>(Booking.GetExtent()),
+            Guests = new List<Guest>(Guest.GetExtent()),
+            Bills = new List<Bill>(Bill.GetExtent()),
+            PaymentOperations = new List<PaymentOperation>(PaymentOperation.GetExtent()),
         };
 
         try
@@ -45,13 +56,11 @@ public class ExtentPersistence
             }
             catch (FileNotFoundException)
             {
-                Employee.ClearExtent();
-                Room.ClearExtent();
+                ClearAllExtents();
                 return false;
             }
 
-            Employee.ClearExtent();
-            Room.ClearExtent();
+            ClearAllExtents();
 
             var serializer = new XmlSerializer(typeof(ExtentContainer));
             
@@ -61,34 +70,60 @@ public class ExtentPersistence
                 try
                 {
                     container = (ExtentContainer)serializer.Deserialize(reader);
-                    
-                    Employee.FixIdCounter(); 
-                    Room.FixIdCounter();
                 }
                 catch (InvalidCastException)
                 {
-                    Employee.ClearExtent();
-                    Room.ClearExtent();
+                    ClearAllExtents();
                     return false;
                 }
                 catch (Exception)
                 {
-                    Employee.ClearExtent();
-                    Room.ClearExtent();
+                    ClearAllExtents();
                     return false;
                 }
 
                 if (container == null)
                 {
-                    Employee.ClearExtent();
-                    Room.ClearExtent();
+                    ClearAllExtents();
                     return false;
                 }
 
-                if (container.Employees != null) 
+                if (container.Employees != null)
                     Employee.ReplaceExtent(container.Employees);
-                if (container.Rooms != null) 
+
+                if (container.Rooms != null)
                     Room.ReplaceExtent(container.Rooms);
+
+                if (container.HotelBlocks != null)
+                    HotelBlock.ReplaceExtent(container.HotelBlocks);
+
+                if (container.Addresses != null)
+                    Address.ReplaceExtent(container.Addresses);
+
+                if (container.Hotels != null)
+                    Hotel.ReplaceExtent(container.Hotels);
+                
+                if (container.Guests != null)
+                    Guest.ReplaceExtent(container.Guests);
+                
+                if (container.Bookings != null)
+                    Booking.ReplaceExtent(container.Bookings);
+                
+                if (container.Bills != null)
+                    Bill.ReplaceExtent(container.Bills);
+                
+                if (container.PaymentOperations != null)
+                    PaymentOperation.ReplaceExtent(container.PaymentOperations);
+                
+                Employee.FixIdCounter();
+                Room.FixIdCounter();
+                HotelBlock.FixIdCounter();
+                Address.FixIdCounter();
+                Hotel.FixIdCounter();
+                Guest.FixIdCounter();
+                Booking.FixIdCounter();
+                Bill.FixIdCounter();
+                PaymentOperation.FixIdCounter();
             }
 
             return true;
@@ -98,4 +133,18 @@ public class ExtentPersistence
             file?.Dispose();
         }
     }
+    
+    private static void ClearAllExtents()
+    {
+        Employee.ClearExtent();
+        Room.ClearExtent();
+        HotelBlock.ClearExtent();
+        Address.ClearExtent();
+        Hotel.ClearExtent();
+        Guest.ClearExtent();
+        Booking.ClearExtent();
+        Bill.ClearExtent();
+        PaymentOperation.ClearExtent();
+    }
+    
 }

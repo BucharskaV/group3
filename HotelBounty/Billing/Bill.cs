@@ -17,9 +17,16 @@ public class Bill
 
     public decimal TotalPrice { get; set; }
 
-    public Booking Booking { get; set; }
-    
-
+    private Booking _booking;
+    public Booking Booking 
+    {
+        get => _booking;
+        set
+        {
+            if(value == null) throw new ArgumentNullException("The booking cannot be null.");
+            _booking = value;
+        }
+    }
     private const decimal TaxRate = 0.08m; // 8% for example
 
     public Bill()
@@ -69,7 +76,7 @@ public class Bill
         _billList = bills;
     }
 
-    internal static void ClearExtent()
+    public static void ClearExtent()
     {
         _billList.Clear();
     }

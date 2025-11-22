@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Xml.Serialization;
+using HotelBounty.Enums;
 
 namespace HotelBounty.Rooms;
 
@@ -11,12 +12,6 @@ public class Deluxe : Room
     private List<string> _minibarFilling = new List<string>();
     
     public List<string> MiniBarFilling { set; get; } = new List<string>();
-    
-    public List<string> MiniBarFillingSerializable
-    {
-        get => _minibarFilling;
-        set => _minibarFilling = value ?? new List<string>();
-    }
 
     public void SetMiniBarFilling(IEnumerable<string> filling)
     {
@@ -37,7 +32,7 @@ public class Deluxe : Room
         _minibarFilling = list;
     }
 
-    public string? _terrace;
+    private string? _terrace;
 
     public string? Terrace
     {
@@ -50,7 +45,7 @@ public class Deluxe : Room
         }
     }
 
-    public string? _extraBad;
+    private string? _extraBad;
 
     public string? ExtraBad
     {
@@ -63,7 +58,7 @@ public class Deluxe : Room
         }
     }
 
-    public Deluxe(int occupancy, double price, string? climatization, string? isCleaned, string? isAvailable, string? terrace, string? extraBad)
+    public Deluxe(Occupancy occupancy, double price, string? climatization, string? isCleaned, string? isAvailable, string? terrace, string? extraBad)
         : base(occupancy, price, climatization, isCleaned, isAvailable)
     {
         Terrace = terrace;

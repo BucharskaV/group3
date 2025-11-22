@@ -1,4 +1,7 @@
 using System.Xml.Serialization;
+using HotelBounty.Bookings;
+using HotelBounty.Employees;
+using HotelBounty.Enums;
 
 namespace HotelBounty.Rooms;
 
@@ -9,24 +12,30 @@ namespace HotelBounty.Rooms;
 [XmlInclude(typeof(Standard))]
 public class Room
 {
+    private static List<Room> _roomList = new List<Room>();
     private static int nextId = 1;
-
     public int Id { get; set; }
+    
+    private List<Booking> _bookings = new List<Booking>();
 
-    public int _occupancy;
+    public List<Booking> Bookings
+    {
+        get { return _bookings; }
+        set { _bookings = value; }
+    }
 
-    public int Occupancy
+    private Occupancy _occupancy;
+
+    public Occupancy Occupancy
     {
         get => _occupancy;
         set
         {
-            if(value <= 0)
-                throw new ArgumentException("Occupancy value cannot be less than 0");
             _occupancy = value;
         }
     }
     
-    public double _price;
+    private double _price;
 
     public double Price
     {
@@ -39,7 +48,7 @@ public class Room
         }
     }
 
-    public string? _climatization;
+    private string? _climatization;
     
     public string? Climatization
     {
@@ -55,8 +64,7 @@ public class Room
         }
     }
 
-    public string? _isCleaned;
-
+    private string? _isCleaned;
     public string? IsCleaned
     {
         get => _isCleaned;
@@ -71,8 +79,7 @@ public class Room
         }
     }
 
-    public string? _isAvailable;
-
+    private string? _isAvailable;
     public string? IsAvailable
     {
         get => _isAvailable;
@@ -88,7 +95,6 @@ public class Room
     }
     
     private Hotel _hotel;
-
     public Hotel Hotel
     {
         get => _hotel;
@@ -98,10 +104,14 @@ public class Room
             _hotel = value;
         }
     }
-    
-    public Room() { }
 
-    public Room(int occupancy, double price, string climatization, string isCleaned, string isAvailable)
+    public Room()
+    {
+        Id = nextId++;
+        AddRoom(this);
+    }
+
+    public Room(Occupancy occupancy, double price, string climatization, string isCleaned, string isAvailable)
     { 
         Id = nextId++;
         Occupancy = occupancy;
@@ -112,9 +122,6 @@ public class Room
         
         AddRoom(this);
     }
-    
-    
-    private static List<Room> _roomList = new List<Room>();
     
     public static List<Room> GetListOfAvailableRooms()
     {
@@ -147,7 +154,7 @@ public class Room
         _roomList = rooms;
     }
 
-    internal static void ClearExtent()
+    public static void ClearExtent()
     {
         _roomList.Clear();
     }

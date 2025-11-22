@@ -3,21 +3,26 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.Serialization;
-using HotelBounty.ValueObjects;
-
-namespace HotelBounty.Guests;
+using HotelBounty.Bookings;
+using HotelBounty.ComplexAttributes;
 
 [Serializable]
 public class Guest
 {
     private static List<Guest> _guestList = new List<Guest>();
     private static int nextId = 1;
-
     public int Id { get; set; }
+    
+    private List<Booking> _bookings = new List<Booking>();
+    public List<Booking> Bookings
+    {
+        get { return _bookings; }
+        set { _bookings = value; }
+    }
 
-    private string _name = string.Empty;
+    private string _name;
     private DateTime _dateOfBirth;
-    private string? _pesel;
+    private string _pesel;
 
     public string Name
     {
@@ -43,12 +48,26 @@ public class Guest
         }
     }
 
-    
-    public int Age => CalculateAge(_dateOfBirth);
+    public int Age
+    {
+        get
+        {
+            return CalculateAge(_dateOfBirth);
+        }
+    }
 
-    public Address? Address { get; set; }
+    private Address _address;
+    public Address Address
+    {
+        get => _address;
+        set
+        {
+            if(value == null) throw new ArgumentNullException("The adress cannot be null.");
+            _address = value;
+        }
+    }
 
-    public string? Pesel
+    public string Pesel
     {
         get => _pesel;
         set
@@ -58,6 +77,20 @@ public class Guest
             _pesel = value;
         }
     }
+    
+    private string _guestCardNumber;
+    public string GuestCardNumber
+    {
+        get => _guestCardNumber;
+        set
+        {
+            if(string.IsNullOrEmpty(value))
+                throw new ArgumentException("Guest card number cannot be empty");
+            if (value.Length != 10 && !value.All(char.IsDigit))
+                throw new ArgumentException("Guest card number  must be exactly 10 digits");
+            _guestCardNumber = value;
+        }
+    }
 
     public Guest() 
     {
@@ -65,13 +98,14 @@ public class Guest
         AddGuest(this);
     }
 
-    public Guest(string name, DateTime dateOfBirth, Address? address = null, string? pesel = null)
+    public Guest(string name, DateTime dateOfBirth, Address address, string pesel, string guestCardNumber)
     {
         Id = nextId++;
         Name = name;
         DateOfBirth = dateOfBirth;
         Address = address;
         Pesel = pesel;
+        GuestCardNumber = guestCardNumber;
 
         AddGuest(this);
     }
@@ -92,12 +126,12 @@ public class Guest
     }
 
 
-    public static ReadOnlyCollection<Guest> GetAllGuests()
+    public static ReadOnlyCollection<Guest> GetExtent()
     {
         return _guestList.AsReadOnly();
     }
 
-    public void EditGuestInfo(string name, DateTime dateOfBirth, Address? address, string? pesel)
+    public void EditGuestInfo(string name, DateTime dateOfBirth, Address address, string? pesel)
     {
         Name = name;
         DateOfBirth = dateOfBirth;
@@ -111,7 +145,7 @@ public class Guest
         _guestList = guests;
     }
 
-    internal static void ClearExtent()
+    public static void ClearExtent()
     {
         _guestList.Clear();
     }

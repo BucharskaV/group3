@@ -1,3 +1,5 @@
+using HotelBounty.Enums;
+
 namespace HotelBounty.Rooms;
 
 [Serializable]
@@ -28,7 +30,7 @@ public class PetFriendly : Room
         }
     }
 
-    public PetFriendly(int occupancy, double price, string? climatization, string? isCleaned, string? isAvailable, string petFeeders, int maxPetsAllowed)
+    public PetFriendly(Occupancy occupancy, double price, string? climatization, string? isCleaned, string? isAvailable, string petFeeders, int maxPetsAllowed)
         : base(occupancy, price, climatization, isCleaned, isAvailable)
     {
         PetFeeders = petFeeders;

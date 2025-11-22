@@ -1,3 +1,5 @@
+using HotelBounty.Enums;
+
 namespace HotelBounty.Rooms;
 
 [Serializable]
@@ -19,7 +21,7 @@ public class NoPets : Room
         }
     }
 
-    public NoPets(int occupancy, double price, string? climatization, string? isCleaned, string? isAvailsble, string? allergyFriendly) 
+    public NoPets(Occupancy occupancy, double price, string? climatization, string? isCleaned, string? isAvailsble, string? allergyFriendly) 
         : base(occupancy, price, climatization, isCleaned, isAvailsble)
     {
         AllergyFriendly = allergyFriendly;
