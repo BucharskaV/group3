@@ -26,7 +26,7 @@ public abstract class Employee
     }
     public int Id { get; set; }
 
-    public string _name;
+    private string _name;
     public string Name
     {
         get => _name;
@@ -37,7 +37,7 @@ public abstract class Employee
             _name = value;
         }
     }
-    public string _surname;
+    private string _surname;
     public string Surname
     {
         get => _surname;
@@ -49,8 +49,7 @@ public abstract class Employee
         }
     }
 
-    public decimal _bonus;
-
+    private decimal _bonus;
     public decimal Bonus
     {
         get => _bonus;
@@ -69,7 +68,6 @@ public abstract class Employee
         }
     }
     
-    
     private Employee? _supervisor;
     
     public Employee? Supervisor
@@ -85,8 +83,6 @@ public abstract class Employee
     
     
     private HotelBlock _hotelBlock;
-
-    
     public HotelBlock HotelBlock
     {
         get => _hotelBlock;
@@ -96,8 +92,12 @@ public abstract class Employee
             _hotelBlock = value;
         }
     }
-    
-    public Employee() {}
+
+    public Employee()
+    {
+        Id = nextId++;
+        AddEmployee(this);
+    }
 
     public Employee(string name, string surname, decimal bonus, Employee? supervisor)
     {
@@ -127,7 +127,7 @@ public abstract class Employee
         _employeesList = employees;
     }
 
-    internal static void ClearExtent()
+    public static void ClearExtent()
     {
         _employeesList.Clear();
     }

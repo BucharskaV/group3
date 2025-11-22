@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.Serialization;
+using HotelBounty.Bookings;
 using HotelBounty.Enums;
 
 namespace HotelBounty.Billing;
@@ -12,16 +13,55 @@ public class PaymentOperation
 {
     private static List<PaymentOperation> _paymentList = new List<PaymentOperation>();
     private static int nextId = 1;
-
     public int Id { get; set; }
+    
+    private PaymentMethod _paymentMethod;
 
-    public PaymentMethod Method { get; set; }
+    public PaymentMethod PaymentMethod
+    {
+        get => _paymentMethod;
+        set => _paymentMethod = value;
+    }
 
-    public DateTime PaymentDate { get; set; }
+    private DateTime _paymentDate;
+    public DateTime PaymentDate {
+        get => _paymentDate;
+        set => _paymentDate = value;
+    }
 
-    public decimal Amount { get; set; }
+    private decimal _amount;
 
-    public Bill Bill { get; set; }
+    public decimal Amount
+    {
+        get => _amount;
+        set
+        {
+            if(value < 0) throw new ArgumentOutOfRangeException("The payment amount cannot be less than zero.");
+            _amount = value;
+        }
+    }
+
+    private Bill _bill;
+    public Bill Bill
+    {
+        get => _bill;
+        set
+        {
+            if(value == null) throw new ArgumentNullException("The bill cannot be null.");
+            _bill = value;
+        }
+    }
+    
+    private Booking _booking;
+    public Booking Booking
+    {
+        get => _booking;
+        set
+        {
+            if(value == null) throw new ArgumentNullException("The booking cannot be null.");
+            _booking = value;
+        }
+    }
 
     public PaymentOperation()
     {
@@ -29,14 +69,12 @@ public class PaymentOperation
         AddPayment(this);
     }
 
-    public PaymentOperation(Bill bill, PaymentMethod method, decimal amount)
+    public PaymentOperation(Bill bill, Booking booking, PaymentMethod method, decimal amount)
     {
-        if (bill == null) throw new ArgumentNullException(nameof(bill));
-        if (amount <= 0) throw new ArgumentOutOfRangeException(nameof(amount));
-
         Id = nextId++;
+        Booking = booking;
         Bill = bill;
-        Method = method;
+        PaymentMethod = method;
         Amount = amount;
         PaymentDate = DateTime.Now;
 
@@ -76,7 +114,7 @@ public class PaymentOperation
         _paymentList = payments;
     }
 
-    internal static void ClearExtent()
+    public static void ClearExtent()
     {
         _paymentList.Clear();
     }

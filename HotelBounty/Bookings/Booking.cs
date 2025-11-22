@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Xml.Serialization;
+using HotelBounty.Billing;
 using HotelBounty.Enums;
-using HotelBounty.Guests;
 using HotelBounty.Rooms;
 
 namespace HotelBounty.Bookings;
@@ -14,8 +14,25 @@ public class Booking
 {
     private static List<Booking> _bookingList = new List<Booking>();
     private static int nextId = 1;
-
     public int Id { get; set; }
+    
+    private Room _room;
+    public Room Room
+    {
+        get => _room;
+        set
+        {
+            if(value == null) throw new ArgumentNullException("The room cannot be null.");
+            _room = value;
+        }
+    }
+
+    private List<Bill> _bills = new List<Bill>();
+    public List<Bill> Bills
+    {
+        get { return _bills; }
+        set { _bills = value; }
+    }
 
     private DateTime _checkInDate;
     private DateTime _checkOutDate;
@@ -34,17 +51,35 @@ public class Booking
         get => _checkOutDate;
         set
         {
-            
             _checkOutDate = value;
         }
     }
 
-    public BookingStatus Status { get; set; }
+    private BookingStatus _status;
 
-    public Guest Guest { get; set; }
-    public Room Room { get; set; }
+    public BookingStatus Status
+    {
+        get => _status;
+        set
+        {
+            _status = value;
+        }
+    }
 
-    public string? GuestCardNumber { get; set; }
+    private string _guestCardNumber;
+
+    public string GuestCardNumber
+    {
+        get => _guestCardNumber;
+        set
+        {
+            if(string.IsNullOrEmpty(value))
+                throw new ArgumentException("Guest card number cannot be empty");
+            if (value.Length != 10 && !value.All(char.IsDigit))
+                throw new ArgumentException("Guest card number  must be exactly 10 digits");
+            _guestCardNumber = value;
+        }
+    }
 
     public Booking()
     {
@@ -52,19 +87,14 @@ public class Booking
         AddBooking(this);
     }
 
-    public Booking(Guest guest, Room room, DateTime checkInDate, DateTime checkOutDate, string? guestCardNumber = null)
+    public Booking(DateTime checkInDate, DateTime checkOutDate, string guestCardNumber)
     {
-        if (guest == null) throw new ArgumentNullException(nameof(guest));
-        if (room == null) throw new ArgumentNullException(nameof(room));
         if (checkOutDate <= checkInDate)
             throw new ArgumentException("Check-out date must be after check-in date");
 
         Id = nextId++;
-
-        Guest = guest;
-        Room = room;
-        _checkInDate = checkInDate;
-        _checkOutDate = checkOutDate;
+        CheckInDate = checkInDate;
+        CheckOutDate = checkOutDate;
         GuestCardNumber = guestCardNumber;
 
         Status = BookingStatus.PREPARING;
@@ -78,7 +108,7 @@ public class Booking
         _bookingList.Add(booking);
     }
 
-    public static ReadOnlyCollection<Booking> GetBookingList()
+    public static ReadOnlyCollection<Booking> GetExtent()
     {
         return _bookingList.AsReadOnly();
     }
@@ -130,7 +160,7 @@ public class Booking
         _bookingList = bookings;
     }
 
-    internal static void ClearExtent()
+    public static void ClearExtent()
     {
         _bookingList.Clear();
     }
