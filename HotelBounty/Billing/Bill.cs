@@ -15,7 +15,19 @@ public class Bill
 
     public int Id { get; set; }
 
-    public decimal TotalPrice { get; set; }
+    private decimal _totalPrice;
+    public decimal TotalPrice
+    {
+        get => _totalPrice;
+        set
+        {
+            if (value < 0)
+                throw new ArgumentException("Total price cannot be negative.");
+            
+
+            _totalPrice = value;
+        }
+    }
 
     private Booking _booking;
     public Booking Booking 
@@ -24,6 +36,10 @@ public class Bill
         set
         {
             if(value == null) throw new ArgumentNullException("The booking cannot be null.");
+            
+            if (_booking != null && _booking != value)
+                throw new InvalidOperationException("Booking cannot be changed once it has been set.");
+
             _booking = value;
         }
     }

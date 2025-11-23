@@ -23,6 +23,10 @@ public class Booking
         set
         {
             if(value == null) throw new ArgumentNullException("The room cannot be null.");
+            
+            if (Status == BookingStatus.COMPLETED || Status == BookingStatus.CANCELED)
+                throw new InvalidOperationException("Room cannot be changed for completed or canceled booking.");
+
             _room = value;
         }
     }
@@ -31,7 +35,16 @@ public class Booking
     public List<Bill> Bills
     {
         get { return _bills; }
-        set { _bills = value; }
+        set
+        {
+            if (value == null)
+                throw new ArgumentNullException(nameof(value), "Bills collection cannot be null.");
+
+            if (value.Any(b => b == null))
+                throw new ArgumentException("Bills collection cannot contain null items.", nameof(value));
+
+            _bills = value;
+        }
     }
 
     private DateTime _checkInDate;
@@ -42,6 +55,12 @@ public class Booking
         get => _checkInDate;
         set
         {
+            if (value.Date < DateTime.Today)
+                throw new ArgumentException("Check-in date cannot be in the past.");
+
+            if (_checkOutDate != default && value >= _checkOutDate)
+                throw new ArgumentException("Check-in date must be before check-out date.");
+
             _checkInDate = value;
         }
     }
@@ -51,6 +70,8 @@ public class Booking
         get => _checkOutDate;
         set
         {
+            if (value <= _checkInDate)
+                throw new ArgumentException("Check-out date must be after check-in date.");
             _checkOutDate = value;
         }
     }
@@ -62,6 +83,9 @@ public class Booking
         get => _status;
         set
         {
+            if (_status == BookingStatus.COMPLETED && value != BookingStatus.COMPLETED)
+                throw new InvalidOperationException("Cannot change status of a completed booking.");
+
             _status = value;
         }
     }
@@ -77,6 +101,8 @@ public class Booking
                 throw new ArgumentException("Guest card number cannot be empty");
             if (value.Length != 10 && !value.All(char.IsDigit))
                 throw new ArgumentException("Guest card number  must be exactly 10 digits");
+            
+            
             _guestCardNumber = value;
         }
     }
