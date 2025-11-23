@@ -48,49 +48,34 @@ public class Room
         }
     }
 
-    private string? _climatization;
+    private bool _climatization;
     
-    public string? Climatization
+    public bool Climatization
     {
         get => _climatization;
         set
         {
-            if (!string.IsNullOrEmpty(value))
-            {
-                if (value.Length > 50)
-                    throw new ArgumentException("Description of climatization availability cannot be longer than 50 characters");
-            }
             _climatization = value; 
         }
     }
 
-    private string? _isCleaned;
-    public string? IsCleaned
+    private bool _isCleaned;
+    public bool IsCleaned
     {
         get => _isCleaned;
         set
         {
-            if (!string.IsNullOrEmpty(value))
-            {
-                if(value.Length > 50)
-                    throw new ArgumentException("Description of room state cannot be longer than 50 characters");
-            }
             _isCleaned = value;
         }
     }
 
-    private string? _isAvailable;
-    public string? IsAvailable
+    private bool _isAvailable;
+    public bool IsAvailable
     {
         get => _isAvailable;
         set
-        {
-            if (!string.IsNullOrEmpty(value))
-            {
-                if(value.Length > 50)
-                    throw new ArgumentException("Description of room state cannot be longer than 50 characters");
-                _isAvailable = value;
-            }
+        { 
+            _isAvailable = value;
         }
     }
     
@@ -111,7 +96,7 @@ public class Room
         AddRoom(this);
     }
 
-    public Room(Occupancy occupancy, double price, string climatization, string isCleaned, string isAvailable)
+    public Room(Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable)
     { 
         Id = nextId++;
         Occupancy = occupancy;
@@ -126,14 +111,13 @@ public class Room
     public static List<Room> GetListOfAvailableRooms()
     {
         return _roomList
-            .Where(r => r.IsAvailable != null && r.IsAvailable.Equals("Yes", StringComparison.OrdinalIgnoreCase))
+            .Where(r => r.IsAvailable)
             .ToList();
     }
-
     public static List<Room> GetListOfRoomsToClean()
     {
         return _roomList
-            .Where(r => r.IsCleaned != null && r.IsCleaned.Equals("No", StringComparison.OrdinalIgnoreCase))
+            .Where(r => r.IsCleaned)
             .ToList();
     }
 

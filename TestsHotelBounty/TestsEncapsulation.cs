@@ -114,7 +114,7 @@ public class TestsEncapsulation
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
         var booking = new Booking(checkIn, checkOut, "1234567890");
-        booking.Room = new Standard(Occupancy.SINGLE, 100, "AC", "Yes", "Yes");
+        booking.Room = new Standard(Occupancy.SINGLE, 100, true, true, true);
 
         var bill = new Bill(booking);
 
@@ -140,7 +140,7 @@ public class TestsEncapsulation
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
         var booking = new Booking(checkIn, checkOut, "1234567890");
-        booking.Room = new Standard(Occupancy.SINGLE, 100, "AC", "Yes", "Yes");
+        booking.Room = new Standard(Occupancy.SINGLE, 100, true, true, true);
         var bill = new Bill(booking);
 
         var payment = new PaymentOperation(bill, booking, PaymentMethod.CASH, 50m);
@@ -156,5 +156,21 @@ public class TestsEncapsulation
         );
     }
     
-    
+    [Test]
+    public void Room_ModifyingProperty_UpdateObjectButNotBypassEncapsulation()
+    {
+        Room.ClearExtent();
+        var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
+        var r1 = new Standard(Occupancy.SINGLE, 100, true, true, true)
+        {
+            Hotel = hotel
+        };
+        r1.Price = 150;
+        var extentRoom = Room.GetExtent()[0];
+        Assert.That(extentRoom.Price, Is.EqualTo(150));
+        var extent = Room.GetExtent();
+        Assert.Throws<NotSupportedException>(() =>
+            ((System.Collections.Generic.ICollection<Room>)extent).Add(new Standard())
+        );
+    }
 }
