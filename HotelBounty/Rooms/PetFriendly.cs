@@ -30,8 +30,8 @@ public class PetFriendly : Room
         }
     }
 
-    public PetFriendly(Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable, string petFeeders, int maxPetsAllowed)
-        : base(occupancy, price, climatization, isCleaned, isAvailable)
+    public PetFriendly(int roomNumber, Hotel hotel, Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable, string petFeeders, int maxPetsAllowed)
+        : base(roomNumber, hotel, occupancy, price, climatization, isCleaned, isAvailable)
     {
         PetFeeders = petFeeders;
         MaxPetsAllowed = maxPetsAllowed;

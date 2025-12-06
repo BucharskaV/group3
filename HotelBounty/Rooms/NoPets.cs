@@ -17,8 +17,8 @@ public class NoPets : Room
         }
     }
 
-    public NoPets(Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailsble, bool allergyFriendly) 
-        : base(occupancy, price, climatization, isCleaned, isAvailsble)
+    public NoPets(int roomNumber, Hotel hotel, Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailsble, bool allergyFriendly) 
+        : base(roomNumber, hotel, occupancy, price, climatization, isCleaned, isAvailsble)
     {
         AllergyFriendly = allergyFriendly;
     }

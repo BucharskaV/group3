@@ -26,7 +26,7 @@ public class Booking
             
             if (Status == BookingStatus.COMPLETED || Status == BookingStatus.CANCELED)
                 throw new InvalidOperationException("Room cannot be changed for completed or canceled booking.");
-
+    
             _room = value;
         }
     }

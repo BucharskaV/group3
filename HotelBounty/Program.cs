@@ -27,10 +27,10 @@ class Program
         var block1 = new HotelBlock("Block A", address) { Hotel = hotel };
         var block2 = new HotelBlock("Block B", address) { Hotel = hotel };
         
-        var r1 = new Deluxe(Occupancy.TRIPLE, 300.50, true, true, true, true, true);
-        var r2 = new NoPets(Occupancy.DOUBLE, 130, true, true, true, true);
-        var r3 = new PetFriendly(Occupancy.DOUBLE, 130, false, false, false, "Meat", 2);
-        var r4 = new Standard(Occupancy.DOUBLE, 100.99, false, false, false);
+        var r1 = new Deluxe(101, hotel, Occupancy.TRIPLE, 300.50, true, true, true, true, true);
+        var r2 = new NoPets(102, hotel, Occupancy.DOUBLE, 130, true, true, true, true);
+        var r3 = new PetFriendly(103, hotel, Occupancy.DOUBLE, 130, false, false, false, "Meat", 2);
+        var r4 = new Standard(104, hotel, Occupancy.DOUBLE, 100.99, false, false, false);
         
         var e1 = new Cleaner("Jakub", "Ivanov", 100, Specialization.ROOMS);
         var e2 = new Receptionist("Bob", "Ivanov", 100, "MyKe12334552");
