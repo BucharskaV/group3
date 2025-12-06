@@ -103,6 +103,7 @@ public abstract class Employee
 
     public void SetSupervisor(Employee? newSupervisor)
     {
+        if (newSupervisor == null) throw new ArgumentNullException("The supervisor cannot be null.");
         if(newSupervisor == this)
             throw new InvalidOperationException("The employee cannot supervise itself.");
         
@@ -114,17 +115,13 @@ public abstract class Employee
         
         _supervisor = newSupervisor;
 
-        if (newSupervisor != null)
-        {
-            if(!newSupervisor._supervisees.Add(this))
-                throw new InvalidOperationException("The supervisor already has this supervisee.");
-        }
+        if(!newSupervisor._supervisees.Add(this))
+            throw new InvalidOperationException("The supervisor already has this supervisee.");
     }
 
     public void RemoveSupervisor()
     {
-        if(_supervisor == null)
-            return;
+        if(_supervisor == null) throw new InvalidOperationException("The supervisor is not set.");
         var oldSupervisor = _supervisor;
         _supervisor = null;
         oldSupervisor._supervisees.Remove(this);

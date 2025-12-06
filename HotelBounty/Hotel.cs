@@ -82,7 +82,7 @@ public class Hotel
     public void AddHotelBlock(HotelBlock block)
     {
         if(block == null) throw new ArgumentNullException("The hotel block cannot be null");
-        if (_blocks.Contains(block)) throw new ArgumentException("The hotel block already contains the block");
+        if (_blocks.Contains(block)) throw new ArgumentException("The hotel already contains the block");
         
         if(block.Hotel != this)
             throw new InvalidOperationException("Block belongs to another hotel");
