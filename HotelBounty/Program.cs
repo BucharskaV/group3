@@ -24,26 +24,24 @@ class Program
         var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
         var address1 = new Address("Gdansk", "Oliwa", "Plocka", 1);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var block = new HotelBlock("First hotel block", address)
-        {
-            Hotel = hotel
-        };
+        var block1 = new HotelBlock("Block A", address) { Hotel = hotel };
+        var block2 = new HotelBlock("Block B", address) { Hotel = hotel };
         
         var r1 = new Deluxe(101, hotel, Occupancy.TRIPLE, 300.50, true, true, true, true, true);
         var r2 = new NoPets(102, hotel, Occupancy.DOUBLE, 130, true, true, true, true);
         var r3 = new PetFriendly(103, hotel, Occupancy.DOUBLE, 130, false, false, false, "Meat", 2);
         var r4 = new Standard(104, hotel, Occupancy.DOUBLE, 100.99, false, false, false);
         
-        var e1 = new Cleaner("Jakub", "Ivanov", 100, null, Specialization.ROOMS){
-            HotelBlock = block
-        };
-        var e2 = new Receptionist("Bob", "Ivanov", 100, null, "MyKe12334552"){
-            HotelBlock = block
-        };
-        var e3 = new SecurityGuard("Masha", "Ivanova", 100, e2, "MyKe12334552", null){
-            HotelBlock = block
-        };
+        var e1 = new Cleaner("Jakub", "Ivanov", 100, Specialization.ROOMS);
+        var e2 = new Receptionist("Bob", "Ivanov", 100, "MyKe12334552");
+        var e3 = new SecurityGuard("Masha", "Ivanova", 100, "MyKe12334552", null);
+        
+        e3.SetSupervisor(e2);
 
+        block1.AddEmployee(e1);
+        block1.AddEmployee(e2);
+        block1.AddEmployee(e3);
+        
         var g = new Guest("Anna", new DateTime(1990, 04, 01), address1, "99072423358", "0000000001");
         var booking = new Booking(new DateTime(2025, 12, 22), new DateTime(2025, 12, 25), "0000000001")
         {
@@ -87,7 +85,7 @@ class Program
         if (Address.GetExtent().Count() != 2)
             throw new Exception("Address extent count mismatch after load!");
 
-        if (HotelBlock.GetExtent().Count() != 1)
+        if (HotelBlock.GetExtent().Count() != 2)
             throw new Exception("HotelBlock extent count mismatch after load!");
         
         if (Guest.GetExtent().Count() != 1)

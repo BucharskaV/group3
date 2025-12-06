@@ -25,24 +25,25 @@ public class Receptionist : Employee
         }
     }
     
-    private List<string> _languages = new List<string>();
-    public List<string> Languages { get; set; } = new List<string>();
-    
+    public List<string> Languages { get; private set; } = new List<string>();
     public void SetLanguages(IEnumerable<string> languages)
     {
         if (languages == null)
             throw new ArgumentNullException(nameof(languages));
+
         var list = new List<string>();
+
         foreach (var language in languages)
         {
             if (string.IsNullOrWhiteSpace(language))
                 throw new ArgumentException("The language cannot be null, empty, or whitespace.");
             list.Add(language);
         }
+
         if (list.Count == 0)
             throw new ArgumentException("At least one language must be added.");
 
-        _languages = list;
+        Languages = list;
     }
 
     public void AddLanguage(string language)
@@ -50,9 +51,9 @@ public class Receptionist : Employee
         if (string.IsNullOrWhiteSpace(language))
             throw new ArgumentException("The language cannot be null, empty, or whitespace.");
 
-        if (!_languages.Contains(language))
-            _languages.Add(language);
-        else 
+        if (!Languages.Contains(language))
+            Languages.Add(language);
+        else
             throw new ArgumentException("The language already added.");
     }
 
@@ -60,15 +61,16 @@ public class Receptionist : Employee
     {
         if (string.IsNullOrWhiteSpace(language))
             throw new ArgumentException("The language cannot be null, empty, or whitespace.");
-        
-        if (_languages.Count - 1== 0)
+
+        if (Languages.Count - 1 == 0)
             throw new InvalidOperationException("An employee must have at least one language.");
 
-        _languages.Remove(language);
+        Languages.Remove(language);
     }
+
     
-    public Receptionist(string name, string surname, decimal bonus, Employee? supervisor, string databaseKey)
-        : base(name, surname, bonus, supervisor)
+    public Receptionist(string name, string surname, decimal bonus, string databaseKey)
+        : base(name, surname, bonus)
     {
         DatabaseKey = databaseKey;
     }
