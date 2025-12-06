@@ -21,6 +21,12 @@ public class Booking
 
     public void SetRoom(Room room, bool internalCall = false)
     {
+        if (room == null)
+            throw new ArgumentNullException(nameof(room));
+        
+        if (Status == BookingStatus.COMPLETED || Status == BookingStatus.CANCELED)
+            throw new InvalidOperationException("Cannot change room for completed or canceled booking");
+
         if (_room == room)
             return;
 
