@@ -20,7 +20,7 @@ public class TestsEncapsulation
         {
             Hotel = hotel
         };
-        var e1 = new Cleaner("Jakub", "Ivanov", 100, Specialization.ROOMS);
+        var e1 = new Cleaner("Jakub", "Ivanov", 100, block, null, Specialization.ROOMS);
         e1.Name = "A";
         var extentEmployee = Employee.GetExtent()[0];
         Assert.That(extentEmployee.Name, Is.EqualTo("A"));

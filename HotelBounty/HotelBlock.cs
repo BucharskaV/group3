@@ -11,33 +11,6 @@ public class HotelBlock
     private static int nextId = 1;
     public int Id { get; set; }
     
-    private readonly HashSet<Employee> _employees = new HashSet<Employee>();
-    public IReadOnlyCollection<Employee> Employees => _employees;
-
-    public void AddEmployee(Employee e)
-    {
-        if(e == null) throw new ArgumentNullException("The employee cannot be null.");
-        if(_employees.Contains(e)) throw new InvalidOperationException("The employee already works in this block.");
-        
-        if(e.HotelBlock != null && e.HotelBlock != this)
-            throw new InvalidOperationException($"The employee already works in another block {e.HotelBlock.Name}");
-        
-        _employees.Add(e);
-        e.AssignHotelBlock(this);
-    }
-
-    public void RemoveEmployee(Employee e)
-    {
-        if(e == null) throw new ArgumentNullException("The employee cannot be null.");
-        if(!_employees.Contains(e)) throw new InvalidOperationException("The employee does not works in this block.");
-        
-        if(_employees.Count == 1)
-            throw new InvalidOperationException("The employee cannot be removed from the block, the hotel block must have at least one employee.");
-        
-        _employees.Remove(e);
-        e.UnassignHotelBlock();
-    }
-    
     private Hotel _hotel;
     public Hotel Hotel
     {
@@ -72,12 +45,48 @@ public class HotelBlock
             _location = value;
         }
     }
+    
+    private readonly HashSet<Employee> _employees = new HashSet<Employee>();
+    public IReadOnlyCollection<Employee> Employees => _employees;
 
-    public HotelBlock(string name, Address location)
+    public void AddEmployee(Employee e)
+    {
+        if(e == null) throw new ArgumentNullException("The employee cannot be null.");
+        if(_employees.Contains(e)) throw new InvalidOperationException("The employee already works in this block.");
+        
+        if(e.HotelBlock != null && e.HotelBlock != this)
+            throw new InvalidOperationException($"The employee already works in another block {e.HotelBlock.Name}");
+        
+        _employees.Add(e);
+        e.AssignHotelBlock(this);
+    }
+
+    public void RemoveEmployee(Employee e)
+    {
+        if(e == null) throw new ArgumentNullException("The employee cannot be null.");
+        if(!_employees.Contains(e)) throw new InvalidOperationException("The employee does not works in this block.");
+        
+        if(_employees.Count == 1)
+            throw new InvalidOperationException("The employee cannot be removed from the block, the hotel block must have at least one employee.");
+        
+        _employees.Remove(e);
+        e.UnassignHotelBlock();
+    }
+
+    public HotelBlock(string name, Address location, IEnumerable<Employee>? employees = null)
     {
         Id = nextId++;
-        _name = name;
-        _location = location;
+        Name = name;
+        Location = location;
+        
+        _employees = new HashSet<Employee>();
+        if (employees != null)
+        {
+            foreach (var e in employees)
+            {
+                AddEmployee(e);
+            }
+        }
         
         AddHotelBlock(this);
     }

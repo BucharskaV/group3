@@ -155,12 +155,18 @@ public abstract class Employee
         AddEmployee(this);
     }
 
-    public Employee(string name, string surname, decimal bonus)
+    public Employee(string name, string surname, decimal bonus, HotelBlock hotelBlock, Employee? supervisor = null)
     {
         Id = nextId++;
         Name = name;
         Surname = surname;
         Bonus = bonus;
+        
+        hotelBlock.AddEmployee(this);
+        if (supervisor != null)
+        {
+            SetSupervisor(supervisor);
+        }
 
         AddEmployee(this);
     }
