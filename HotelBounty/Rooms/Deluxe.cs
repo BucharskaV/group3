@@ -32,33 +32,29 @@ public class Deluxe : Room
         _minibarFilling = list;
     }
 
-    private string? _terrace;
+    private bool _terrace;
 
-    public string? Terrace
+    public bool Terrace
     {
         get => _terrace;
         set
         {
-            if (!string.IsNullOrEmpty(value) && value.Length > 50)
-                throw new ArgumentException("Description of terrace availability cannot be longer than 50 characters");
             _terrace = value;
         }
     }
 
-    private string? _extraBad;
+    private bool _extraBad;
 
-    public string? ExtraBad
+    public bool ExtraBad
     {
         get => _extraBad;
         set
         {
-            if (!string.IsNullOrEmpty(value) && value.Length > 50)
-                throw new ArgumentException("Description of extra bed availability cannot be longer than 50 characters");
             _extraBad = value;
         }
     }
 
-    public Deluxe(Occupancy occupancy, double price, string? climatization, string? isCleaned, string? isAvailable, string? terrace, string? extraBad)
+    public Deluxe(Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable, bool terrace, bool extraBad)
         : base(occupancy, price, climatization, isCleaned, isAvailable)
     {
         Terrace = terrace;

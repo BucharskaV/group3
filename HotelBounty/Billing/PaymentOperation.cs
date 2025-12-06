@@ -20,7 +20,16 @@ public class PaymentOperation
     public PaymentMethod PaymentMethod
     {
         get => _paymentMethod;
-        set => _paymentMethod = value;
+        set
+        {
+            if (!Enum.IsDefined(typeof(PaymentMethod), value))
+                throw new ArgumentException("Invalid payment method.", nameof(value));
+
+            if (_amount > 0 && _paymentMethod != value)
+                throw new InvalidOperationException("Payment method cannot be changed after payment amount is set.");
+
+            _paymentMethod = value;
+        }
     }
 
     private DateTime _paymentDate;
@@ -48,6 +57,13 @@ public class PaymentOperation
         set
         {
             if(value == null) throw new ArgumentNullException("The bill cannot be null.");
+            
+            if (_bill != null && _bill != value)
+                throw new InvalidOperationException("Bill cannot be changed once it has been set.");
+            
+            if (Booking != null && value.Booking != null && value.Booking != Booking)
+                throw new ArgumentException("Bill booking does not match payment booking.");
+            
             _bill = value;
         }
     }
@@ -59,6 +75,12 @@ public class PaymentOperation
         set
         {
             if(value == null) throw new ArgumentNullException("The booking cannot be null.");
+            
+            if (_booking != null && _booking != value)
+                throw new InvalidOperationException("Booking cannot be changed once it has been set.");
+
+            
+            
             _booking = value;
         }
     }

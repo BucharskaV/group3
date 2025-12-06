@@ -29,10 +29,10 @@ class Program
             Hotel = hotel
         };
         
-        var r1 = new Deluxe(Occupancy.TRIPLE, 300.50, null, null, null, null, null);
-        var r2 = new NoPets(Occupancy.DOUBLE, 130, null, null, null, null);
-        var r3 = new PetFriendly(Occupancy.DOUBLE, 130, null, null, null, "Meat", 2);
-        var r4 = new Standard(Occupancy.DOUBLE, 100.99, null, null, null);
+        var r1 = new Deluxe(Occupancy.TRIPLE, 300.50, true, true, true, true, true);
+        var r2 = new NoPets(Occupancy.DOUBLE, 130, true, true, true, true);
+        var r3 = new PetFriendly(Occupancy.DOUBLE, 130, false, false, false, "Meat", 2);
+        var r4 = new Standard(Occupancy.DOUBLE, 100.99, false, false, false);
         
         var e1 = new Cleaner("Jakub", "Ivanov", 100, Specialization.ROOMS){
             HotelBlock = block

@@ -3,5 +3,5 @@
 [Serializable]
 public enum Occupancy
 {
-    SINGLE, DOUBLE, TRIPLE
+    SINGLE, DOUBLE, TRIPLE, QUADRIPLE
 }

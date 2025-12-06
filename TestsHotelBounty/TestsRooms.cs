@@ -11,43 +11,43 @@ public class TestsRooms
         var room = new Standard(
             occupancy: Occupancy.SINGLE,
             price: 100,
-            climatization: "AC",
-            isCleaned: "Yes",
-            isAvailable: "Yes"
+            climatization: true,
+            isCleaned: true,
+            isAvailable: true
         );
 
         Assert.AreEqual(Occupancy.SINGLE, room.Occupancy);
         Assert.AreEqual(100, room.Price);
-        Assert.AreEqual("AC", room.Climatization);
-        Assert.AreEqual("Yes", room.IsCleaned);
-        Assert.AreEqual("Yes", room.IsAvailable);
+        Assert.AreEqual(true, room.Climatization);
+        Assert.AreEqual(true, room.IsCleaned);
+        Assert.AreEqual(true, room.IsAvailable);
     }
 
     [Test]
     public void CreateRoom_InvalidPrice_ShouldThrow()
     {
         Assert.Throws<ArgumentException>(() =>
-            new Standard(Occupancy.SINGLE, -10, "AC", "Yes", "Yes"));
+            new Standard(Occupancy.SINGLE, -10, true, true, true));
     }
 
     [Test]
     public void ChangeCleaningStatus_ShouldUpdateValue()
     {
-        var room = new Standard(Occupancy.SINGLE, 80, "Fan", "No", "Yes");
+        var room = new Standard(Occupancy.SINGLE, 80, false, false, true);
 
-        room.IsCleaned = "Yes";
+        room.IsCleaned = true;
 
-        Assert.AreEqual("Yes", room.IsCleaned);
+        Assert.AreEqual(true, room.IsCleaned);
     }
 
     [Test]
     public void ChangeIsAvailable_ShouldUpdateValue()
     {
-        var room = new Standard(Occupancy.SINGLE, 80, "Fan", "Yes", "No");
+        var room = new Standard(Occupancy.SINGLE, 80, false, true, false);
 
-        room.IsAvailable = "Yes";
+        room.IsAvailable = true;
 
-        Assert.AreEqual("Yes", room.IsAvailable);
+        Assert.AreEqual(true, room.IsAvailable);
     }
     
     
@@ -57,39 +57,17 @@ public class TestsRooms
         var deluxe = new Deluxe(
             occupancy: Occupancy.SINGLE,
             price: 250,
-            climatization: "AC",
-            isCleaned: "Yes",
-            isAvailable: "Yes",
-            terrace: "Medium terrace",
-            extraBad: "Extra bed"
+            climatization: true,
+            isCleaned: true,
+            isAvailable: true,
+            terrace: true,
+            extraBad: false
         );
 
-        Assert.That(deluxe.Terrace, Is.EqualTo("Medium terrace"));
-        Assert.That(deluxe.ExtraBad, Is.EqualTo("Extra bed"));
+        Assert.That(deluxe.Terrace, Is.EqualTo(true));
+        Assert.That(deluxe.ExtraBad, Is.EqualTo(false));
     }
-
-    [Test]
-    public void DeluxeRoom_TerraceTooLong_ThrowsException()
-    {
-        var deluxe = new Deluxe();
-
-        Assert.Throws<ArgumentException>(() =>
-        {
-            deluxe.Terrace = new string('A', 51);
-        });
-    }
-
-    [Test]
-    public void DeluxeRoom_ExtraBedTooLong_ThrowsException()
-    {
-        var deluxe = new Deluxe();
-
-        Assert.Throws<ArgumentException>(() =>
-        {
-            deluxe.ExtraBad = new string('B', 55);
-        });
-    }
-
+    
     [Test]
     public void DeluxeRoom_SetMiniBarFillingCorrectly()
     {
@@ -142,18 +120,18 @@ public class TestsRooms
         var room = new PetFriendly(
             occupancy: Occupancy.SINGLE,
             price: 120,
-            climatization: "AC",
-            isCleaned: "Yes",
-            isAvailable: "Yes",
+            climatization: true,
+            isCleaned: true,
+            isAvailable: true,
             petFeeders: "Automatic feeder",
             maxPetsAllowed: 2
         );
 
         Assert.That(room.Occupancy, Is.EqualTo(Occupancy.SINGLE));
         Assert.That(room.Price, Is.EqualTo(120));
-        Assert.That(room.Climatization, Is.EqualTo("AC"));
-        Assert.That(room.IsCleaned, Is.EqualTo("Yes"));
-        Assert.That(room.IsAvailable, Is.EqualTo("Yes"));
+        Assert.That(room.Climatization, Is.EqualTo(true));
+        Assert.That(room.IsCleaned, Is.EqualTo(true));
+        Assert.That(room.IsAvailable, Is.EqualTo(true));
         Assert.That(room.PetFeeders, Is.EqualTo("Automatic feeder"));
         Assert.That(room.MaxPetsAllowed, Is.EqualTo(2));
     }
@@ -163,12 +141,12 @@ public class TestsRooms
     {
         Assert.Throws<ArgumentException>(() =>
         {
-            var room = new PetFriendly(Occupancy.SINGLE, 100, "AC", "Yes", "Yes", "", 1);
+            var room = new PetFriendly(Occupancy.SINGLE, 100, true, true, true, "", 1);
         });
 
         Assert.Throws<ArgumentException>(() =>
         {
-            var room = new PetFriendly(Occupancy.SINGLE, 100, "AC", "Yes", "Yes", null, 1);
+            var room = new PetFriendly(Occupancy.SINGLE, 100, true, true, true, null, 1);
         });
     }
 
@@ -177,14 +155,14 @@ public class TestsRooms
     {
         Assert.Throws<ArgumentException>(() =>
         {
-            var room = new PetFriendly(Occupancy.SINGLE, 100, "AC", "Yes", "Yes", "Feeder", 4);
+            var room = new PetFriendly(Occupancy.SINGLE, 100, true, true, true, "Feeder", 4);
         });
     }
 
     [Test]
     public void PetFriendly_MaxPetsAllowed_StaticValueChanges()
     {
-        var room = new PetFriendly(Occupancy.SINGLE, 100, "AC", "Yes", "Yes", "Feeder", 2);
+        var room = new PetFriendly(Occupancy.SINGLE, 100, true, true, true, "Feeder", 2);
         room.MaxPetsAllowed = 3; 
 
         Assert.That(room.MaxPetsAllowed, Is.EqualTo(3));
@@ -196,48 +174,26 @@ public class TestsRooms
         var room = new NoPets(
             occupancy: Occupancy.SINGLE,
             price: 150,
-            climatization: "AC",
-            isCleaned: "Yes",
-            isAvailsble: "Yes",
-            allergyFriendly: "Hypoallergenic bedding"
+            climatization: true,
+            isCleaned: true,
+            isAvailsble: true,
+            allergyFriendly: true
         );
 
         Assert.That(room.Occupancy, Is.EqualTo(Occupancy.SINGLE));
         Assert.That(room.Price, Is.EqualTo(150));
-        Assert.That(room.Climatization, Is.EqualTo("AC"));
-        Assert.That(room.IsCleaned, Is.EqualTo("Yes"));
-        Assert.That(room.IsAvailable, Is.EqualTo("Yes"));
-        Assert.That(room.AllergyFriendly, Is.EqualTo("Hypoallergenic bedding"));
+        Assert.That(room.Climatization, Is.EqualTo(true));
+        Assert.That(room.IsCleaned, Is.EqualTo(true));
+        Assert.That(room.IsAvailable, Is.EqualTo(true));
+        Assert.That(room.AllergyFriendly, Is.EqualTo(true));
     }
-
+    
     [Test]
-    public void NoPets_AllergyFriendly_AllowsNullOrEmpty()
+    public void NoPetsRoom_SetNegativePrice_ShouldThrowException()
     {
-        var room1 = new NoPets(Occupancy.SINGLE, 80, "Fan", "Yes", "Yes", null);
-        var room2 = new NoPets(Occupancy.SINGLE, 80, "Fan", "Yes", "Yes", "");
-
-        Assert.That(room1.AllergyFriendly, Is.Null);
-        Assert.That(room2.AllergyFriendly, Is.EqualTo(""));
-    }
-
-    [Test]
-    public void NoPets_AllergyFriendly_TooLong_ThrowsException()
-    {
-        string longText = new string('A', 51);
-
         Assert.Throws<ArgumentException>(() =>
-        {
-            var room = new NoPets(Occupancy.SINGLE, 100, "AC", "Yes", "Yes", longText);
-        });
+            new NoPets(Occupancy.SINGLE, -50, true, true, true, true)
+        );
     }
-
-    [Test]
-    public void NoPets_AllergyFriendly_Exactly50Characters_IsAllowed()
-    {
-        string exactly50 = new string('X', 50);
-
-        var room = new NoPets(Occupancy.SINGLE, 120, "Heat", "Yes", "Yes", exactly50);
-
-        Assert.That(room.AllergyFriendly, Is.EqualTo(exactly50));
-    }
+    
 }

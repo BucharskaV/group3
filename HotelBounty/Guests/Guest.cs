@@ -44,6 +44,9 @@ public class Guest
         {
             if (value > DateTime.Today)
                 throw new ArgumentException("Date of birth cannot be in the future");
+            
+            if (CalculateAge(value) < 18)
+                throw new ArgumentException("Guest must be at least 18.");
             _dateOfBirth = value;
         }
     }
@@ -72,9 +75,14 @@ public class Guest
         get => _pesel;
         set
         {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("PESEL cannot be empty.");
+            
             if (!string.IsNullOrEmpty(value) && value.Length != 11)
                 throw new ArgumentException("Pesel should contain 11 characters");
             _pesel = value;
+            
+            
         }
     }
     
