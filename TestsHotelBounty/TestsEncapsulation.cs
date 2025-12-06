@@ -17,7 +17,7 @@ public class TestsEncapsulation
         {
             Hotel = hotel
         };
-        var e1 = new Cleaner("Jakub", "Ivanov", 100, null, Specialization.ROOMS){
+        var e1 = new Cleaner("Jakub", "Ivanov", 100, Specialization.ROOMS){
             HotelBlock = block
         };
         e1.Name = "A";

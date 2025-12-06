@@ -67,8 +67,8 @@ public class Receptionist : Employee
         _languages.Remove(language);
     }
     
-    public Receptionist(string name, string surname, decimal bonus, Employee? supervisor, string databaseKey)
-        : base(name, surname, bonus, supervisor)
+    public Receptionist(string name, string surname, decimal bonus, string databaseKey)
+        : base(name, surname, bonus)
     {
         DatabaseKey = databaseKey;
     }

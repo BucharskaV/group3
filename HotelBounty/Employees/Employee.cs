@@ -68,20 +68,6 @@ public abstract class Employee
         }
     }
     
-    private Employee? _supervisor;
-    
-    public Employee? Supervisor
-    {
-        get => _supervisor;
-        set
-        {
-            if (value == this)
-                throw new ArgumentException("An employee cannot be their own supervisor.");
-            _supervisor = value;
-        }
-    }
-    
-    
     private HotelBlock _hotelBlock;
     public HotelBlock HotelBlock
     {
@@ -93,19 +79,71 @@ public abstract class Employee
         }
     }
 
+    private Employee? _supervisor;
+    private readonly HashSet<Employee> _supervisees = new HashSet<Employee>();
+    public IReadOnlyCollection<Employee> Supervisees => _supervisees;
+    public Employee? Supervisor => _supervisor;
+
+    public void SetSupervisor(Employee? newSupervisor)
+    {
+        if(newSupervisor == this)
+            throw new InvalidOperationException("The employee cannot supervise itself.");
+        
+        if(_supervisor == newSupervisor)
+            throw new InvalidOperationException("The new supervisor is the same as the current.");
+
+        if (_supervisor != null)
+            _supervisor._supervisees.Remove(this);
+        
+        _supervisor = newSupervisor;
+
+        if (newSupervisor != null)
+        {
+            if(!newSupervisor._supervisees.Add(this))
+                throw new InvalidOperationException("The supervisor already has this supervisee.");
+        }
+    }
+
+    public void RemoveSupervisor()
+    {
+        if(_supervisor == null)
+            return;
+        var oldSupervisor = _supervisor;
+        _supervisor = null;
+        oldSupervisor._supervisees.Remove(this);
+    }
+
+    public void AddSupervisee(Employee e)
+    {
+        if(e == null) throw new ArgumentNullException("The employee cannot be null.");
+        if(e == this) throw new InvalidOperationException("The employees cannot supervise themselves.");
+        if(_supervisees.Contains(e)) throw new InvalidOperationException("The employee is already a supervisee.");
+        _supervisees.Add(e);
+        e.SetSupervisor(this);
+    }
+
+    public void RemoveSupervisee(Employee e)
+    {
+        if(e == null) throw new ArgumentNullException("The employee cannot be null.");
+        if(!_supervisees.Contains(e))
+            throw new InvalidOperationException("Not supervised by this employee.");
+        _supervisees.Remove(e);
+        if(e._supervisor == this)
+            e._supervisor = null;
+    }
+
     public Employee()
     {
         Id = nextId++;
         AddEmployee(this);
     }
 
-    public Employee(string name, string surname, decimal bonus, Employee? supervisor)
+    public Employee(string name, string surname, decimal bonus)
     {
         Id = nextId++;
         Name = name;
         Surname = surname;
         Bonus = bonus;
-        Supervisor = supervisor;
 
         AddEmployee(this);
     }

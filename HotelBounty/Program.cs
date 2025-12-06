@@ -34,16 +34,36 @@ class Program
         var r3 = new PetFriendly(Occupancy.DOUBLE, 130, null, null, null, "Meat", 2);
         var r4 = new Standard(Occupancy.DOUBLE, 100.99, null, null, null);
         
-        var e1 = new Cleaner("Jakub", "Ivanov", 100, null, Specialization.ROOMS){
+        var e1 = new Cleaner("Jakub", "Ivanov", 100, Specialization.ROOMS){
             HotelBlock = block
         };
-        var e2 = new Receptionist("Bob", "Ivanov", 100, null, "MyKe12334552"){
+        var e2 = new Receptionist("Bob", "Ivanov", 100, "MyKe12334552"){
             HotelBlock = block
         };
-        var e3 = new SecurityGuard("Masha", "Ivanova", 100, e2, "MyKe12334552", null){
+        var e3 = new SecurityGuard("Masha", "Ivanova", 100, "MyKe12334552", null){
             HotelBlock = block
         };
-
+        
+        Console.WriteLine("Assign supervisors:");
+        e2.SetSupervisor(e1);      // e1 supervises e2
+        e3.SetSupervisor(e1);      // e1 supervises e3
+        Console.WriteLine($"e1 supervisees: {e1.Supervisees.Count}");   // Expect 2
+        Console.WriteLine($"e2 supervisor: {e2.Supervisor?.Name}");     // Expect Jakub
+        Console.WriteLine($"e3 supervisor: {e3.Supervisor?.Name}");     // Expect Jakub
+        
+        Console.WriteLine("Add supervisee directly:");
+            //e1.AddSupervisee(e2);     // Should throw DUPLICATE exception
+            
+        Console.WriteLine("Reassign supervisor:");
+        e3.SetSupervisor(e2);     // e2 now supervises e3
+        Console.WriteLine($"e1 supervisees: {e1.Supervisees.Count}");   // Expect 1 (only e2)
+        Console.WriteLine($"e2 supervisees: {e2.Supervisees.Count}");   // Expect 1 (e3)
+        
+        Console.WriteLine("Remove supervisor:");
+        e3.RemoveSupervisor();
+        Console.WriteLine($"e3 supervisor: {e3.Supervisor}");          // Expect null
+        Console.WriteLine($"e2 supervisees: {e2.Supervisees.Count}");  // Expect 0
+        
         var g = new Guest("Anna", new DateTime(1990, 04, 01), address1, "99072423358", "0000000001");
         var booking = new Booking(new DateTime(2025, 12, 22), new DateTime(2025, 12, 25), "0000000001")
         {
