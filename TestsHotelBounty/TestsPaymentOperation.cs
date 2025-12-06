@@ -23,10 +23,9 @@ public class TestsPaymentOperation
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
         var room = new Standard(201 ,hotel, Occupancy.SINGLE, 100, false, true,true);
-        booking.Room = room;
+        var booking = new Booking(checkIn, checkOut, "1234567890",room);
 
         var bill = new Bill(booking);
 
@@ -88,9 +87,9 @@ public class TestsPaymentOperation
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        booking.Room = new Standard(201, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Standard(201 ,hotel, Occupancy.SINGLE, 100, false, true,true);
+        var booking = new Booking(checkIn, checkOut, "1234567890",room);
         var bill = new Bill(booking);
 
         var payment = new PaymentOperation(bill, booking, PaymentMethod.CASH, 50m);
@@ -106,17 +105,17 @@ public class TestsPaymentOperation
     {
         var checkIn1 = DateTime.Today.AddDays(1);
         var checkOut1 = DateTime.Today.AddDays(3);
-        var booking1 = new Booking(checkIn1, checkOut1, "1234567890");
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        booking1.Room = new Standard(201, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Standard(201 ,hotel, Occupancy.SINGLE, 100, false, true,true);
+        var booking1 = new Booking(checkIn1, checkOut1, "1234567890",room);
         var bill1 = new Bill(booking1);
 
         var payment = new PaymentOperation(bill1, booking1, PaymentMethod.CARD, 100m);
 
         var checkIn2 = DateTime.Today.AddDays(5);
         var checkOut2 = DateTime.Today.AddDays(7);
-        var booking2 = new Booking(checkIn2, checkOut2, "0987654321");
-        booking2.Room = new Standard(203, hotel, Occupancy.DOUBLE, 150, true, true, true);
+        var room1 = new Standard(203, hotel, Occupancy.DOUBLE, 150, true, true, true);
+        var booking2 = new Booking(checkIn2, checkOut2, "0987654321", room1);
         var bill2 = new Bill(booking2);
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -130,14 +129,16 @@ public class TestsPaymentOperation
     {
         var checkIn1 = DateTime.Today.AddDays(1);
         var checkOut1 = DateTime.Today.AddDays(3);
-        var booking1 = new Booking(checkIn1, checkOut1, "1234567890");
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        booking1.Room = new Standard(201, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room1 = new Standard(201, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var booking1 = new Booking(checkIn1, checkOut1, "1234567890", room1);
+
 
         var checkIn2 = DateTime.Today.AddDays(5);
         var checkOut2 = DateTime.Today.AddDays(7);
-        var booking2 = new Booking(checkIn2, checkOut2, "0987654321");
-        booking2.Room = new Standard(203, hotel, Occupancy.DOUBLE, 150, true, true, true);
+        var room2 = new Standard(203, hotel, Occupancy.DOUBLE, 150, true, true, true);
+        var booking2 = new Booking(checkIn2, checkOut2, "0987654321", room2);
+
 
         var billForBooking2 = new Bill(booking2);
 
@@ -152,9 +153,9 @@ public class TestsPaymentOperation
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        booking.Room = new Standard(201, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Standard(201, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var booking = new Booking(checkIn, checkOut, "1234567890", room);
         var bill = new Bill(booking);
 
         var payment = new PaymentOperation(bill, booking, PaymentMethod.CASH, 50m);
@@ -170,14 +171,14 @@ public class TestsPaymentOperation
     {
         var checkIn1 = DateTime.Today.AddDays(1);
         var checkOut1 = DateTime.Today.AddDays(3);
-        var booking1 = new Booking(checkIn1, checkOut1, "1234567890");
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        booking1.Room = new Standard(201, hotel, Occupancy.SINGLE, 100, true, true, true);
-
+        var room1 = new Standard(201, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var booking1 = new Booking(checkIn1, checkOut1, "1234567890", room1);
+        
         var checkIn2 = DateTime.Today.AddDays(5);
         var checkOut2 = DateTime.Today.AddDays(7);
-        var booking2 = new Booking(checkIn2, checkOut2, "0987654321");
-        booking2.Room = new Standard(203, hotel, Occupancy.DOUBLE, 150, true, true, true);
+        var room2 = new Standard(203, hotel, Occupancy.DOUBLE, 150, true, true, true);
+        var booking2 = new Booking(checkIn2, checkOut2, "0987654321", room2);
 
         var bill1 = new Bill(booking1);
 
@@ -232,11 +233,10 @@ public class TestsPaymentOperation
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
         var room = new Standard(201, hotel, Occupancy.SINGLE, 200, true, true, true);
-        booking.Room = room;
-
+        var booking = new Booking(checkIn, checkOut, "1234567890", room);
+        
         var bill = new Bill(booking);
 
         var payment = new PaymentOperation();

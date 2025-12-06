@@ -43,10 +43,10 @@ class Program
         block1.AddEmployee(e3);
         
         var g = new Guest("Anna", new DateTime(1990, 04, 01), address1, "99072423358", "0000000001");
-        var booking = new Booking(new DateTime(2025, 12, 22), new DateTime(2025, 12, 25), "0000000001")
-        {
-            Room = r1
-        };
+        var booking = new Booking(new DateTime(2025, 12, 22), new DateTime(2025, 12, 25), "0000000001", r1);
+        // {
+        //     Room = r1
+        // };
 
         var bill = new Bill(booking);
 

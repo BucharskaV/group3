@@ -15,7 +15,6 @@ public class Room
     private static List<Room> _roomList = new List<Room>();
     private static int nextId = 1;
     
-    
     private int _roomNumber;
     public int RoomNumber
     {
@@ -28,12 +27,44 @@ public class Room
     }
     public int Id { get; set; }
     
-    private List<Booking> _bookings = new List<Booking>();
+    private HashSet<Booking> _bookings = new HashSet<Booking>();
+    
+    public IReadOnlyCollection<Booking> Bookings => _bookings.ToList().AsReadOnly();
 
-    public List<Booking> Bookings
+    internal void AddBooking(Booking booking, bool internalCall = false)
     {
-        get { return _bookings; }
-        set { _bookings = value; }
+        if (booking == null)
+            throw new ArgumentNullException(nameof(booking));
+
+        if (_bookings.Contains(booking))
+            return;
+
+        _bookings.Add(booking);
+
+        if (!internalCall)
+            booking.SetRoom(this, true);
+    }
+
+    internal void RemoveBooking(Booking booking, bool internalCall = false)
+    {
+        if (booking == null)
+            throw new ArgumentNullException(nameof(booking));
+
+        if (!_bookings.Contains(booking))
+            return;
+
+        _bookings.Remove(booking);
+
+        if (!internalCall)
+            booking.SetRoom(null, true);
+    }
+
+    internal void SetBookingRoom(Booking booking, bool internalCall = false)
+    {
+        if (booking == null)
+            return;
+
+        AddBooking(booking, internalCall);
     }
 
     private Occupancy _occupancy;
@@ -100,6 +131,25 @@ public class Room
         _hotel = hotel; 
     }
     
+    internal void SetHotel(Hotel newHotel, bool internalCall = false)
+    {
+        if (_hotel == newHotel)
+            return;
+        
+        if (_hotel != null)
+        {
+            var oldHotel = _hotel;
+            _hotel = null;                
+            oldHotel.RemoveRoom(RoomNumber, internalCall: true);
+        }
+        
+        if (newHotel != null)
+        {
+            _hotel = newHotel;           
+            newHotel.AddRoom(this, internalCall: true);
+        }
+    }
+    
     public Room() { }
 
     public Room(int roomNumber, Hotel hotel, Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable)
@@ -114,8 +164,7 @@ public class Room
         IsCleaned = isCleaned;
         IsAvailable = isAvailable;
         
-        hotel.AddRoom(this);
-        
+        SetHotel(hotel);
         Add(this);
     }
     

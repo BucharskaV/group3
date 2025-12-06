@@ -29,7 +29,7 @@ public class Hotel
             _rooms = value?.ToDictionary(r => r.RoomNumber) ?? new Dictionary<int, Room>();
             foreach (var room in _rooms.Values)
             {
-                room.AssignHotel(this);
+                room.SetHotel(this);
             }
         }
     }
@@ -137,19 +137,20 @@ public class Hotel
             nextId = maxId + 1;
         }
     }
-
     
-    public void AddRoom(Room room)
+    
+    public void AddRoom(Room room, bool internalCall = false)
     {
-        if (room == null) throw new ArgumentNullException(nameof(room));
-        if (_rooms.ContainsKey(room.RoomNumber))
-            throw new InvalidOperationException($"Room number {room.RoomNumber} already exists in hotel {Name}");
-        if (room.Hotel != null && room.Hotel != this)
-            throw new InvalidOperationException("Room is already assigned to another hotel.");
-        
-        room.AssignHotel(this);
+        if (room == null)
+            throw new ArgumentNullException(nameof(room));
 
-        _rooms.Add(room.RoomNumber, room);
+        if (_rooms.ContainsKey(room.RoomNumber) && _rooms[room.RoomNumber] != room)
+            throw new InvalidOperationException($"Room {room.RoomNumber} already exists in this hotel.");
+
+        _rooms[room.RoomNumber] = room;
+
+        if (!internalCall)
+            room.SetHotel(this, true); 
     }
     
 
@@ -160,16 +161,17 @@ public class Hotel
     
         return _rooms[roomNumber];
     }
-
     
-    public void RemoveRoom(int roomNumber)
+    public void RemoveRoom(int roomNumber, bool internalCall = false)
     {
         if (!_rooms.ContainsKey(roomNumber))
-            throw new InvalidOperationException($"Room {roomNumber} does not exist in hotel {Name}");
+            throw new InvalidOperationException($"Room {roomNumber} does not exist in this hotel.");
 
-        var room = _rooms[roomNumber];
-        room.AssignHotel(null); // break association
+        Room room = _rooms[roomNumber];
         _rooms.Remove(roomNumber);
+
+        if (!internalCall)
+            room.SetHotel(null, true);
     }
 
 }

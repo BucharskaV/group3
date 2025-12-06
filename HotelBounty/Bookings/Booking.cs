@@ -17,20 +17,31 @@ public class Booking
     public int Id { get; set; }
     
     private Room _room;
-    public Room Room
+    public Room Room => _room;
+
+    public void SetRoom(Room room, bool internalCall = false)
     {
-        get => _room;
-        set
+        if (_room == room)
+            return;
+
+        if (_room != null)
         {
-            if(value == null) throw new ArgumentNullException("The room cannot be null.");
-            
-            if (Status == BookingStatus.COMPLETED || Status == BookingStatus.CANCELED)
-                throw new InvalidOperationException("Room cannot be changed for completed or canceled booking.");
-    
-            _room = value;
+            Room old = _room;
+            _room = null;
+
+            if (!internalCall)
+                old.RemoveBooking(this, true);
+        }
+        
+        if (room != null)
+        {
+            _room = room;
+
+            if (!internalCall)
+                room.AddBooking(this, true);
         }
     }
-
+    
     private List<Bill> _bills = new List<Bill>();
     public List<Bill> Bills
     {
@@ -113,7 +124,7 @@ public class Booking
         AddBooking(this);
     }
 
-    public Booking(DateTime checkInDate, DateTime checkOutDate, string guestCardNumber)
+    public Booking(DateTime checkInDate, DateTime checkOutDate, string guestCardNumber, Room room = null)
     {
         if (checkOutDate <= checkInDate)
             throw new ArgumentException("Check-out date must be after check-in date");
@@ -126,6 +137,9 @@ public class Booking
         Status = BookingStatus.PREPARING;
 
         AddBooking(this);
+        
+        if (room != null)
+            SetRoom(room);
     }
 
     private static void AddBooking(Booking booking)

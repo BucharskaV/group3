@@ -111,10 +111,10 @@ public class TestsEncapsulation
 
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        booking.Room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
-
+        var room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var booking = new Booking(checkIn, checkOut, "1234567890", room);
+        
         var bill = new Bill(booking);
 
         bill.TotalPrice = 999m;
@@ -138,9 +138,10 @@ public class TestsEncapsulation
 
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        booking.Room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var booking = new Booking(checkIn, checkOut, "1234567890", room);
+
         var bill = new Bill(booking);
 
         var payment = new PaymentOperation(bill, booking, PaymentMethod.CASH, 50m);
