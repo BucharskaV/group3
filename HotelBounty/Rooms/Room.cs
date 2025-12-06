@@ -31,7 +31,7 @@ public class Room
     
     public IReadOnlyCollection<Booking> Bookings => _bookings.ToList().AsReadOnly();
 
-    internal void AddBooking(Booking booking, bool internalCall = false)
+    public void AddBooking(Booking booking, bool internalCall = false)
     {
         if (booking == null)
             throw new ArgumentNullException(nameof(booking));
@@ -45,7 +45,7 @@ public class Room
             booking.SetRoom(this, true);
     }
 
-    internal void RemoveBooking(Booking booking, bool internalCall = false)
+    public void RemoveBooking(Booking booking, bool internalCall = false)
     {
         if (booking == null)
             throw new ArgumentNullException(nameof(booking));
@@ -131,7 +131,7 @@ public class Room
         _hotel = hotel; 
     }
     
-    internal void SetHotel(Hotel newHotel, bool internalCall = false)
+    public void SetHotel(Hotel newHotel, bool internalCall = false)
     {
         if (_hotel == newHotel)
             return;

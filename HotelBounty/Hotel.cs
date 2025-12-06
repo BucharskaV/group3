@@ -187,7 +187,10 @@ public class Hotel
     public void RemoveRoom(int roomNumber, bool internalCall = false)
     {
         if (!_rooms.ContainsKey(roomNumber))
+        {
+            if (internalCall) return;
             throw new InvalidOperationException($"Room {roomNumber} does not exist in this hotel.");
+        }
 
         Room room = _rooms[roomNumber];
         _rooms.Remove(roomNumber);
@@ -195,5 +198,4 @@ public class Hotel
         if (!internalCall)
             room.SetHotel(null, true);
     }
-
 }
