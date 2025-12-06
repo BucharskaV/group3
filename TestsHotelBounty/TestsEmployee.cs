@@ -10,10 +10,7 @@ public class TestsEmployee
     public void Employee_SetAndGetPropertiesCorrectly()
     {
         var block = new HotelBlock();
-        var employee = new Cleaner("Anna", "Smith", 200, Specialization.ROOMS)
-        {
-            HotelBlock = block
-        };
+        var employee = new Cleaner("Anna", "Smith", 200, Specialization.ROOMS);
         
         Assert.That(employee.Name, Is.EqualTo("Anna"));
         Assert.That(employee.Surname, Is.EqualTo("Smith"));
@@ -43,23 +40,13 @@ public class TestsEmployee
             var emp2 = new Cleaner("Jakub", "", 100, Specialization.ROOMS);
         });
     }
-    
+
     [Test]
     public void Employee_NegativeBonus_ThrowsException()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
             var emp = new Cleaner("Jakub", "Ivanov", -100, Specialization.ROOMS);
-        });
-    }
-    
-    [Test]
-    public void Employee_HotelBlockIsNull_ThrowsException()
-    {
-        var emp = new Cleaner("Jakub", "Ivanov", 100, Specialization.ROOMS);
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            emp.HotelBlock = null;
         });
     }
 

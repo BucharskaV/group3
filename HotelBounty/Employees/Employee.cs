@@ -69,14 +69,31 @@ public abstract class Employee
     }
     
     private HotelBlock _hotelBlock;
-    public HotelBlock HotelBlock
+    public HotelBlock HotelBlock => _hotelBlock;
+
+    internal void AssignHotelBlock(HotelBlock hotelBlock)
     {
-        get => _hotelBlock;
-        set
-        {
-            if(value == null) throw new ArgumentNullException("The hotel block cannot be null.");
-            _hotelBlock = value;
-        }
+        if(hotelBlock == null) throw new ArgumentNullException("The hotel block cannot be null.");
+        if(_hotelBlock != null && _hotelBlock != hotelBlock) _hotelBlock.RemoveEmployee(this);
+        
+        _hotelBlock = hotelBlock;
+    }
+
+    internal void UnassignHotelBlock()
+    {
+        _hotelBlock = null;
+    }
+
+    public void ChangeHotelBlock(HotelBlock newHotelBlock)
+    {
+        if(newHotelBlock == null) throw new ArgumentNullException("The hotel block cannot be null.");
+        
+        if(_hotelBlock == newHotelBlock)
+            throw new InvalidOperationException("Employee already works in this block.");
+        
+        if(_hotelBlock != null) _hotelBlock.RemoveEmployee(this);
+        
+        newHotelBlock.AddEmployee(this);
     }
 
     private Employee? _supervisor;
