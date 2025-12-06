@@ -40,8 +40,8 @@ public class SecurityGuard : Employee
         }
     }
 
-    public SecurityGuard(string name, string surname, decimal bonus, Employee? supervisor, string securityCode, string? accessToWeapons)
-        : base(name, surname, bonus, supervisor)
+    public SecurityGuard(string name, string surname, decimal bonus, string securityCode, string? accessToWeapons)
+        : base(name, surname, bonus)
     {
         SecurityCode = securityCode;
         AccessToWeapons = accessToWeapons;

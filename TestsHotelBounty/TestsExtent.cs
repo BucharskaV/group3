@@ -35,17 +35,17 @@ public class TestsExtent
         {
             Hotel = hotel
         };
-        var r1 = new Deluxe(Occupancy.TRIPLE, 300.50, true, true, true, true, true);
-        var r2 = new NoPets(Occupancy.DOUBLE, 130, true, true, true, true);
-        var r3 = new PetFriendly(Occupancy.DOUBLE, 130, true, true, true, "Meat", 2);
-        var r4 = new Standard(Occupancy.DOUBLE, 100.99, true, true, true);
-        var e1 = new Cleaner("Jakub", "Ivanov", 100, null, Specialization.ROOMS){
+        var r1 = new Deluxe(Occupancy.TRIPLE, 300.50, null, null, null, null, null);
+        var r2 = new NoPets(Occupancy.DOUBLE, 130, null, null, null, null);
+        var r3 = new PetFriendly(Occupancy.DOUBLE, 130, null, null, null, "Meat", 2);
+        var r4 = new Standard(Occupancy.DOUBLE, 100.99, null, null, null);
+        var e1 = new Cleaner("Jakub", "Ivanov", 100, Specialization.ROOMS){
             HotelBlock = block
         };
-        var e2 = new Receptionist("Bob", "Ivanov", 100, null, "MyKe12334552"){
+        var e2 = new Receptionist("Bob", "Ivanov", 100, "MyKe12334552"){
             HotelBlock = block
         };
-        var e3 = new SecurityGuard("Masha", "Ivanova", 100, e2, "MyKe12334552", null){
+        var e3 = new SecurityGuard("Masha", "Ivanova", 100, "MyKe12334552", null){
             HotelBlock = block
         };
         var g = new Guest("Anna", new DateTime(1990, 04, 01), address1, "99072423358", "0000000001");
@@ -77,19 +77,20 @@ public class TestsExtent
         {
             Hotel = hotel
         };
-        var r1 = new Deluxe(Occupancy.TRIPLE, 300.50, true, true, true, true, true);
-        var r2 = new NoPets(Occupancy.DOUBLE, 130, true, true, true, true);
-        var r3 = new PetFriendly(Occupancy.DOUBLE, 130, true, true, true, "Meat", 2);
-        var r4 = new Standard(Occupancy.DOUBLE, 100.99, true, true, true);
-        var e1 = new Cleaner("Jakub", "Ivanov", 100, null, Specialization.ROOMS){
+        var r1 = new Deluxe(Occupancy.TRIPLE, 300.50, null, null, null, null, null);
+        var r2 = new NoPets(Occupancy.DOUBLE, 130, null, null, null, null);
+        var r3 = new PetFriendly(Occupancy.DOUBLE, 130, null, null, null, "Meat", 2);
+        var r4 = new Standard(Occupancy.DOUBLE, 100.99, null, null, null);
+        var e1 = new Cleaner("Jakub", "Ivanov", 100, Specialization.ROOMS){
             HotelBlock = block
         };
-        var e2 = new Receptionist("Bob", "Ivanov", 100, null, "MyKe12334552"){
+        var e2 = new Receptionist("Bob", "Ivanov", 100, "MyKe12334552"){
             HotelBlock = block
         };
-        var e3 = new SecurityGuard("Masha", "Ivanova", 100, e2, "MyKe12334552", null){
+        var e3 = new SecurityGuard("Masha", "Ivanova", 100, "MyKe12334552", null){
             HotelBlock = block
         };
+        e3.SetSupervisor(e2);
         var g = new Guest("Anna", new DateTime(1990, 04, 01), address1, "99072423358", "0000000001");
         var booking = new Booking(new DateTime(2025, 12, 22), new DateTime(2025, 12, 25), "0000000001")
         {
