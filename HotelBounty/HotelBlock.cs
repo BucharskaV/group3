@@ -63,7 +63,7 @@ public class HotelBlock
     private Hotel _hotel;
     public Hotel Hotel => _hotel;
 
-    internal void AssignHotel(Hotel hotel)
+    public void AssignHotel(Hotel hotel)
     {
         if(hotel == null) throw new ArgumentNullException("The hotel cannot be null.");
         
