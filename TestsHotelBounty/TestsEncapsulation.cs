@@ -16,10 +16,7 @@ public class TestsEncapsulation
         Employee.ClearExtent();
         var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var block = new HotelBlock("First hotel block", address)
-        {
-            Hotel = hotel
-        };
+        var block = new HotelBlock(hotel,"First hotel block", address);
         var e1 = new Cleaner("Jakub", "Ivanov", 100, block, null, Specialization.ROOMS);
         e1.Name = "A";
         var extentEmployee = Employee.GetExtent()[0];
@@ -50,10 +47,7 @@ public class TestsEncapsulation
         HotelBlock.ClearExtent();
         var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var block = new HotelBlock("First hotel block", address)
-        {
-            Hotel = hotel
-        };
+        var block = new HotelBlock(hotel,"First hotel block", address);
         block.Name = "A";
         var extentBlock = HotelBlock.GetExtent()[0];
         Assert.That(extentBlock.Name, Is.EqualTo("A"));

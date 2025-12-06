@@ -71,10 +71,7 @@ public class TestsHotel
     {
         var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var block = new HotelBlock("First hotel block", address)
-        {
-            Hotel = hotel
-        };
+        var block = new HotelBlock(hotel, "First hotel block", address);
         
         Assert.That(block.Name, Is.EqualTo("First hotel block"));
         Assert.That(block.Location, Is.EqualTo(address));
@@ -88,36 +85,27 @@ public class TestsHotel
         {
             var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
             var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-            var block = new HotelBlock("", address)
-            {
-                Hotel = hotel
-            };
+            var block = new HotelBlock(hotel, "", address);
         });
     }
 
     [Test]
     public void HotelBlock_NullAddress_ThrowsException()
     {
-        Assert.Throws<ArgumentException>(() =>
+        Assert.Throws<ArgumentNullException>(() =>
         {
             var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-            var block = new HotelBlock("First hotel block", null)
-            {
-                Hotel = hotel
-            };
+            var block = new HotelBlock(hotel, "First hotel block", null);
         });
     }
     
     [Test]
     public void HotelBlock_NullHotel_ThrowsException()
     {
-        Assert.Throws<ArgumentException>(() =>
+        Assert.Throws<ArgumentNullException>(() =>
         {
             var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
-            var block = new HotelBlock("First hotel block", address)
-            {
-                Hotel = null
-            };
+            var block = new HotelBlock(null, "First hotel block", address);
         });
     }
 }

@@ -10,18 +10,6 @@ public class HotelBlock
     private static List<HotelBlock> _hotelBlocksList = new List<HotelBlock>();
     private static int nextId = 1;
     public int Id { get; set; }
-    
-    private Hotel _hotel;
-    public Hotel Hotel
-    {
-        get => _hotel;
-        set
-        {
-            if(value == null) throw new ArgumentNullException("The hotel cannot be null.");
-            _hotel = value;
-        }
-    }
-    
     private string _name;
     public string Name
     {
@@ -35,7 +23,6 @@ public class HotelBlock
     }
     
     private Address _location;
-
     public Address Location
     {
         get => _location;
@@ -72,12 +59,41 @@ public class HotelBlock
         _employees.Remove(e);
         e.UnassignHotelBlock();
     }
+    
+    private Hotel _hotel;
+    public Hotel Hotel => _hotel;
 
-    public HotelBlock(string name, Address location, IEnumerable<Employee>? employees = null)
+    internal void AssignHotel(Hotel hotel)
+    {
+        if(hotel == null) throw new ArgumentNullException("The hotel cannot be null.");
+        
+        if(_hotel == hotel) throw new ArgumentException("The hotel is already assigned to this block.");
+        
+        if(_hotel != null && _hotel != hotel) throw new InvalidOperationException("Block cannot change its hotel in composition.");
+        
+        _hotel = hotel;
+        hotel.AddHotelBlock(this);
+    }
+
+    public void Delete()
+    {
+        foreach (var e in _employees.ToList())
+        {
+            e.UnassignHotelBlock();
+        }
+
+        _hotelBlocksList.Remove(this);
+        _hotel?.HotelBlocks?.ToList().Remove(this);
+        _hotel = null!;
+    }
+
+    public HotelBlock(Hotel hotel, string name, Address location, IEnumerable<Employee>? employees = null)
     {
         Id = nextId++;
         Name = name;
         Location = location;
+        
+        AssignHotel(hotel);
         
         _employees = new HashSet<Employee>();
         if (employees != null)
