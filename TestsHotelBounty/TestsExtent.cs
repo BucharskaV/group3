@@ -35,10 +35,10 @@ public class TestsExtent
         {
             Hotel = hotel
         };
-        var r1 = new Deluxe(Occupancy.TRIPLE, 300.50, true, true, true, true, true);
-        var r2 = new NoPets(Occupancy.DOUBLE, 130, true, true, true, true);
-        var r3 = new PetFriendly(Occupancy.DOUBLE, 130, true, true, true, "Meat", 2);
-        var r4 = new Standard(Occupancy.DOUBLE, 100.99, true, true, true);
+        var r1 = new Deluxe(201, hotel, Occupancy.TRIPLE, 300.50, true, true, true, true, true);
+        var r2 = new NoPets(202, hotel, Occupancy.DOUBLE, 130, true, true, true, true);
+        var r3 = new PetFriendly(203, hotel, Occupancy.DOUBLE, 130, true, true, true, "Meat", 2);
+        var r4 = new Standard(204, hotel, Occupancy.DOUBLE, 100.99, true, true, true);
         var e1 = new Cleaner("Jakub", "Ivanov", 100, null, Specialization.ROOMS){
             HotelBlock = block
         };
@@ -77,10 +77,10 @@ public class TestsExtent
         {
             Hotel = hotel
         };
-        var r1 = new Deluxe(Occupancy.TRIPLE, 300.50, true, true, true, true, true);
-        var r2 = new NoPets(Occupancy.DOUBLE, 130, true, true, true, true);
-        var r3 = new PetFriendly(Occupancy.DOUBLE, 130, true, true, true, "Meat", 2);
-        var r4 = new Standard(Occupancy.DOUBLE, 100.99, true, true, true);
+        var r1 = new Deluxe(201, hotel, Occupancy.TRIPLE, 300.50, true, true, true, true, true);
+        var r2 = new NoPets(202, hotel, Occupancy.DOUBLE, 130, true, true, true, true);
+        var r3 = new PetFriendly(203, hotel, Occupancy.DOUBLE, 130, true, true, true, "Meat", 2);
+        var r4 = new Standard(204, hotel, Occupancy.DOUBLE, 100.99, true, true, true);
         var e1 = new Cleaner("Jakub", "Ivanov", 100, null, Specialization.ROOMS){
             HotelBlock = block
         };

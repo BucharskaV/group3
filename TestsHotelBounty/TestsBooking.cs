@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using HotelBounty;
 using HotelBounty.Billing;
 using HotelBounty.Bookings;
 using HotelBounty.Enums;
@@ -24,7 +25,8 @@ public class TestsBooking
 
         var booking = new Booking(checkIn, checkOut, "1234567890");
 
-        var room = new Standard(Occupancy.SINGLE, 100, true, true, true);
+        Hotel hotel = new Hotel();
+        var room = new Standard(201, hotel, Occupancy.SINGLE, 100, false, true,true);
         booking.Room = room;
 
         var bill1 = new Bill();
@@ -119,8 +121,9 @@ public class TestsBooking
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(2);
         var booking = new Booking(checkIn, checkOut, "1234567890");
-        var room1 = new Standard(Occupancy.SINGLE, 100, true, true, true);
-        var room2 = new Standard(Occupancy.DOUBLE, 150, true, true, true);
+        Hotel hotel = new Hotel();
+        var room1 = new Standard(102, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room2 = new Standard(103, hotel, Occupancy.DOUBLE, 150, true, true, true);
 
         booking.Room = room1;
         booking.Status = BookingStatus.COMPLETED;

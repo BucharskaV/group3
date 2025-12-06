@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Xml.Serialization;
 using HotelBounty.Rooms;
 
 namespace HotelBounty;
@@ -16,12 +17,23 @@ public class Hotel
         set { _blocks = value; }
     }
     
-    private List<Room> _rooms = new List<Room>();
-    public List<Room> Rooms
+    private Dictionary<int, Room> _rooms = new Dictionary<int, Room>();
+    
+    public IReadOnlyDictionary<int, Room> Rooms => _rooms;
+    
+    public List<Room> RoomsSerializable
     {
-        get { return _rooms; }
-        set { _rooms = value; }
+        get => _rooms.Values.ToList();
+        set
+        {
+            _rooms = value?.ToDictionary(r => r.RoomNumber) ?? new Dictionary<int, Room>();
+            foreach (var room in _rooms.Values)
+            {
+                room.AssignHotel(this);
+            }
+        }
     }
+
     
     private string _name;
     public string Name
@@ -125,4 +137,39 @@ public class Hotel
             nextId = maxId + 1;
         }
     }
+
+    
+    public void AddRoom(Room room)
+    {
+        if (room == null) throw new ArgumentNullException(nameof(room));
+        if (_rooms.ContainsKey(room.RoomNumber))
+            throw new InvalidOperationException($"Room number {room.RoomNumber} already exists in hotel {Name}");
+        if (room.Hotel != null && room.Hotel != this)
+            throw new InvalidOperationException("Room is already assigned to another hotel.");
+        
+        room.AssignHotel(this);
+
+        _rooms.Add(room.RoomNumber, room);
+    }
+    
+
+    public Room GetRoom(int roomNumber)
+    {
+        if (!_rooms.ContainsKey(roomNumber))
+            throw new Exception($"Room number {roomNumber} does not exist in hotel {Name}.");
+    
+        return _rooms[roomNumber];
+    }
+
+    
+    public void RemoveRoom(int roomNumber)
+    {
+        if (!_rooms.ContainsKey(roomNumber))
+            throw new InvalidOperationException($"Room {roomNumber} does not exist in hotel {Name}");
+
+        var room = _rooms[roomNumber];
+        room.AssignHotel(null); // break association
+        _rooms.Remove(roomNumber);
+    }
+
 }

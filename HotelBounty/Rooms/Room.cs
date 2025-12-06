@@ -14,6 +14,18 @@ public class Room
 {
     private static List<Room> _roomList = new List<Room>();
     private static int nextId = 1;
+    
+    
+    private int _roomNumber;
+    public int RoomNumber
+    {
+        get => _roomNumber;
+        set
+        {
+            if (value <= 0) throw new ArgumentException("Room number must be positive.");
+            _roomNumber = value;
+        }
+    }
     public int Id { get; set; }
     
     private List<Booking> _bookings = new List<Booking>();
@@ -80,32 +92,31 @@ public class Room
     }
     
     private Hotel _hotel;
-    public Hotel Hotel
-    {
-        get => _hotel;
-        set
-        {
-            if(value == null) throw new ArgumentNullException("The Hotel cannot be null");
-            _hotel = value;
-        }
-    }
 
-    public Room()
-    {
-        Id = nextId++;
-        AddRoom(this);
-    }
+    public Hotel Hotel => _hotel;
 
-    public Room(Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable)
+    internal void AssignHotel(Hotel hotel)
+    {
+        _hotel = hotel; 
+    }
+    
+    public Room() { }
+
+    public Room(int roomNumber, Hotel hotel, Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable)
     { 
+        if(hotel == null) throw new ArgumentNullException("When creating the room the Hotel cannot be null");
+        
         Id = nextId++;
+        RoomNumber = roomNumber;
         Occupancy = occupancy;
         Price = price;
         Climatization = climatization;
         IsCleaned = isCleaned;
         IsAvailable = isAvailable;
         
-        AddRoom(this);
+        hotel.AddRoom(this);
+        
+        Add(this);
     }
     
     public static List<Room> GetListOfAvailableRooms()
@@ -126,7 +137,7 @@ public class Room
         return _roomList.AsReadOnly();
     }
 
-    public static void AddRoom(Room r)
+    public static void Add(Room r)
     {
         if (r == null) throw new ArgumentNullException(nameof(r));
         _roomList.Add(r);

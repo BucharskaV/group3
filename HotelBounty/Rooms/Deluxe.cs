@@ -9,9 +9,7 @@ namespace HotelBounty.Rooms;
 [Serializable]
 public class Deluxe : Room
 {
-    private List<string> _minibarFilling = new List<string>();
-    
-    public List<string> MiniBarFilling { set; get; } = new List<string>();
+    public List<string> MiniBarFilling { get; private set; } = new List<string>();
 
     public void SetMiniBarFilling(IEnumerable<string> filling)
     {
@@ -28,8 +26,9 @@ public class Deluxe : Room
 
         if (list.Count == 0)
             throw new ArgumentException("At least one mini bar filling must be added.");
-
-        _minibarFilling = list;
+        
+        MiniBarFilling = list;
+        
     }
 
     private bool _terrace;
@@ -54,8 +53,8 @@ public class Deluxe : Room
         }
     }
 
-    public Deluxe(Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable, bool terrace, bool extraBad)
-        : base(occupancy, price, climatization, isCleaned, isAvailable)
+    public Deluxe(int roomNumber, Hotel hotel, Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable, bool terrace, bool extraBad)
+        : base(roomNumber,hotel, occupancy, price, climatization, isCleaned, isAvailable)
     {
         Terrace = terrace;
         ExtraBad = extraBad;
