@@ -16,8 +16,8 @@ public class Cleaner : Employee
         }
     }
 
-    public Cleaner(string name, string surname, decimal bonus, Specialization specialization)
-        : base(name, surname, bonus)
+    public Cleaner(string name, string surname, decimal bonus, HotelBlock hotelBlock, Employee? supervisor, Specialization specialization)
+        : base(name, surname, bonus, hotelBlock, supervisor)
     {
         Specialization = specialization;
     }

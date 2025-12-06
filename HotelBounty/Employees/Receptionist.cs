@@ -69,8 +69,8 @@ public class Receptionist : Employee
     }
 
     
-    public Receptionist(string name, string surname, decimal bonus, string databaseKey)
-        : base(name, surname, bonus)
+    public Receptionist(string name, string surname, decimal bonus, HotelBlock hotelBlock, Employee? supervisor, string databaseKey)
+        : base(name, surname, bonus, hotelBlock, supervisor)
     {
         DatabaseKey = databaseKey;
     }
