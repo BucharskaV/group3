@@ -10,15 +10,7 @@ public class Hotel
     private static List<Hotel> _hotelList = new List<Hotel>();
     private static int nextId = 1;
     public int Id { get; set; }
-    private List<HotelBlock> _blocks = new List<HotelBlock>();
-    public List<HotelBlock> HotelBlocks
-    {
-        get { return _blocks; }
-        set { _blocks = value; }
-    }
-    
     private Dictionary<int, Room> _rooms = new Dictionary<int, Room>();
-    
     public IReadOnlyDictionary<int, Room> Rooms => _rooms;
     
     public List<Room> RoomsSerializable
@@ -33,7 +25,6 @@ public class Hotel
             }
         }
     }
-
     
     private string _name;
     public string Name
@@ -67,14 +58,13 @@ public class Hotel
         {
             if(string.IsNullOrEmpty(value))
                 throw new ArgumentException("Phone number cannot be empty");
-            if (value.Length != 9 && !value.All(char.IsDigit))
+            if (value.Length != 9 || !value.All(char.IsDigit))
                 throw new ArgumentException("Phone number must be exactly 9 digits");
             _phoneNumber = value;
         }
     }
 
     private int _stars;
-
     public int Stars
     {
         get => _stars;
@@ -85,14 +75,46 @@ public class Hotel
             _stars = value;
         }
     }
+    
+    private readonly HashSet<HotelBlock> _blocks = new HashSet<HotelBlock>();
+    public IReadOnlyCollection<HotelBlock> HotelBlocks => _blocks.ToList().AsReadOnly();
 
+    public void AddHotelBlock(HotelBlock block)
+    {
+        if(block == null) throw new ArgumentNullException("The hotel block cannot be null");
+        if (_blocks.Contains(block)) throw new ArgumentException("The hotel block already contains the block");
+        
+        if(block.Hotel != this)
+            throw new InvalidOperationException("Block belongs to another hotel");
+        
+        _blocks.Add(block);
+    }
+    
+    public void RemoveHotelBlock(HotelBlock block)
+    {
+        if(block == null) throw new ArgumentNullException("The hotel block cannot be null");
+        if (!_blocks.Contains(block)) throw new InvalidOperationException("Block does not belong to this hotel");
+        
+        _blocks.Remove(block);
+        block.Delete();
+    }
+
+    public void DeleteWholeHotel()
+    {
+        foreach (var block in _blocks.ToList())
+            block.Delete();
+        
+        _blocks.Clear();
+        _hotelList.Remove(this);
+    }
+    
     public Hotel(string name, string city, string phoneNumber, int stars)
     {
         Id = nextId++;
-        _name = name;
-        _city = city;
-        _phoneNumber = phoneNumber;
-        _stars = stars;
+        Name = name;
+        City = city;
+        PhoneNumber = phoneNumber;
+        Stars = stars;
 
         AddHotel(this);
     }
