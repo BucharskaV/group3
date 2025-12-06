@@ -22,13 +22,11 @@ public class TestsBooking
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-
-        var booking = new Booking(checkIn, checkOut, "1234567890");
-
+        
         Hotel hotel = new Hotel();
         var room = new Standard(201, hotel, Occupancy.SINGLE, 100, false, true,true);
-        booking.Room = room;
-
+        var booking = new Booking(checkIn, checkOut, "1234567890", room);
+        
         var bill1 = new Bill();
         var bill2 = new Bill();
         booking.Bills = new List<Bill> { bill1, bill2 };
@@ -103,44 +101,44 @@ public class TestsBooking
     }
 
     [Test]
-    public void Booking_RoomNull_ThrowsException()
+    public void Booking_SetRoomToNull_RemovesRoom()
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(2);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
+        var hotel = new Hotel();
+        var room = new Standard(101, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var booking = new Booking(checkIn, checkOut, "1234567890", room);
 
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            booking.Room = null;
-        });
+        booking.SetRoom(null);
+
+        Assert.IsNull(booking.Room);
     }
+
 
     [Test]
     public void Booking_ChangeRoomForCompletedOrCanceled_ThrowsException()
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(2);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
         Hotel hotel = new Hotel();
         var room1 = new Standard(102, hotel, Occupancy.SINGLE, 100, true, true, true);
         var room2 = new Standard(103, hotel, Occupancy.DOUBLE, 150, true, true, true);
+        var booking = new Booking(checkIn, checkOut, "1234567890", room1);
 
-        booking.Room = room1;
         booking.Status = BookingStatus.COMPLETED;
 
         Assert.Throws<InvalidOperationException>(() =>
         {
-            booking.Room = room2;
+            booking.SetRoom(room2); 
         });
-
-        // второй кейс: для CANCELED
+        
         var booking2 = new Booking(checkIn, checkOut, "0987654321");
-        booking2.Room = room1;
+        booking2.SetRoom(room1); 
         booking2.CancelBooking();
 
         Assert.Throws<InvalidOperationException>(() =>
         {
-            booking2.Room = room2;
+            booking2.SetRoom(room2); 
         });
     }
 

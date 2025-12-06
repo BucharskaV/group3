@@ -44,10 +44,7 @@ public class TestsExtent
         var e3 = new SecurityGuard("Masha", "Ivanova", 100, block2, e2,"MyKe12334552", null);
 
         var g = new Guest("Anna", new DateTime(1990, 04, 01), address1, "99072423358", "0000000001");
-        var booking = new Booking(new DateTime(2025, 12, 22), new DateTime(2025, 12, 25), "0000000001")
-        {
-            Room = r1
-        };
+        var booking = new Booking(new DateTime(2025, 12, 22), new DateTime(2025, 12, 25), "0000000001", r1);
         var bill = new Bill(booking);
         var paymentOperation = new PaymentOperation(bill, booking, PaymentMethod.CARD, 1000);
         
@@ -81,10 +78,8 @@ public class TestsExtent
         var e3 = new SecurityGuard("Masha", "Ivanova", 100, block2, e2,"MyKe12334552", null);
         
         var g = new Guest("Anna", new DateTime(1990, 04, 01), address1, "99072423358", "0000000001");
-        var booking = new Booking(new DateTime(2025, 12, 22), new DateTime(2025, 12, 25), "0000000001")
-        {
-            Room = r1
-        };
+        var booking = new Booking(new DateTime(2025, 12, 22), new DateTime(2025, 12, 25), "0000000001", r1);
+       
         var bill = new Bill(booking);
         var paymentOperation = new PaymentOperation(bill, booking, PaymentMethod.CARD, 1000);
 
@@ -125,5 +120,4 @@ public class TestsExtent
         Assert.That(Bill.GetExtent().Count, Is.EqualTo(countBill));
         Assert.That(PaymentOperation.GetExtent().Count, Is.EqualTo(countPayment));
     }
-
 }
