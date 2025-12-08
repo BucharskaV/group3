@@ -13,11 +13,31 @@ public class Guest
     private static int nextId = 1;
     public int Id { get; set; }
     
-    private List<Booking> _bookings = new List<Booking>();
-    public List<Booking> Bookings
+    private HashSet<Booking> _bookings = new HashSet<Booking>();
+    
+    [XmlIgnore]
+    public IReadOnlyCollection<Booking> Bookings => _bookings.ToList().AsReadOnly();
+
+    public void AddBooking(Booking booking, bool internalCall = false)
     {
-        get { return _bookings; }
-        set { _bookings = value; }
+        if (booking == null) throw new ArgumentNullException(nameof(booking));
+        if (_bookings.Contains(booking)) return;
+
+        _bookings.Add(booking);
+        
+        if (!internalCall)
+        {
+            booking.SetGuest(this, true);
+        }
+    }
+    
+    public void RemoveBooking(Booking booking, bool internalCall = false)
+    {
+        if (booking == null) throw new ArgumentNullException(nameof(booking));
+        if (_bookings.Contains(booking))
+        {
+            _bookings.Remove(booking);
+        }
     }
 
     private string _name;
@@ -29,10 +49,8 @@ public class Guest
         get => _name;
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("Guest name cannot be empty");
-            if (value.Length > 50)
-                throw new ArgumentException("Guest name cannot be longer than 50 characters");
+            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("Guest name cannot be empty");
+            if (value.Length > 50) throw new ArgumentException("Guest name too long");
             _name = value;
         }
     }
@@ -42,22 +60,13 @@ public class Guest
         get => _dateOfBirth;
         set
         {
-            if (value > DateTime.Today)
-                throw new ArgumentException("Date of birth cannot be in the future");
-            
-            if (CalculateAge(value) < 18)
-                throw new ArgumentException("Guest must be at least 18.");
+            if (value > DateTime.Today) throw new ArgumentException("Date cannot be in future");
+            if (CalculateAge(value) < 18) throw new ArgumentException("Guest must be at least 18.");
             _dateOfBirth = value;
         }
     }
 
-    public int Age
-    {
-        get
-        {
-            return CalculateAge(_dateOfBirth);
-        }
-    }
+    public int Age => CalculateAge(_dateOfBirth);
 
     private Address _address;
     public Address Address
@@ -65,7 +74,7 @@ public class Guest
         get => _address;
         set
         {
-            if(value == null) throw new ArgumentNullException("The adress cannot be null.");
+            if(value == null) throw new ArgumentNullException("Address cannot be null");
             _address = value;
         }
     }
@@ -75,27 +84,20 @@ public class Guest
         get => _pesel;
         set
         {
-            if (string.IsNullOrWhiteSpace(value))
-                throw new ArgumentException("PESEL cannot be empty.");
-            
-            if (!string.IsNullOrEmpty(value) && value.Length != 11)
-                throw new ArgumentException("Pesel should contain 11 characters");
+            if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("PESEL cannot be empty.");
+            if (!string.IsNullOrEmpty(value) && value.Length != 11) throw new ArgumentException("Pesel should contain 11 characters");
             _pesel = value;
-            
-            
         }
     }
-    
+
     private string _guestCardNumber;
     public string GuestCardNumber
     {
         get => _guestCardNumber;
         set
         {
-            if(string.IsNullOrEmpty(value))
-                throw new ArgumentException("Guest card number cannot be empty");
-            if (value.Length != 10 && !value.All(char.IsDigit))
-                throw new ArgumentException("Guest card number  must be exactly 10 digits");
+            if(string.IsNullOrEmpty(value)) throw new ArgumentException("Card number empty");
+            if (value.Length != 10 && !value.All(char.IsDigit)) throw new ArgumentException("Card number must be 10 digits");
             _guestCardNumber = value;
         }
     }
@@ -122,8 +124,7 @@ public class Guest
     {
         var today = DateTime.Today;
         var age = today.Year - dateOfBirth.Year;
-        if (dateOfBirth.Date > today.AddYears(-age))
-            age--;
+        if (dateOfBirth.Date > today.AddYears(-age)) age--;
         return age;
     }
 
@@ -133,11 +134,7 @@ public class Guest
         _guestList.Add(guest);
     }
 
-
-    public static ReadOnlyCollection<Guest> GetExtent()
-    {
-        return _guestList.AsReadOnly();
-    }
+    public static ReadOnlyCollection<Guest> GetExtent() => _guestList.AsReadOnly();
 
     public void EditGuestInfo(string name, DateTime dateOfBirth, Address address, string? pesel)
     {
@@ -153,21 +150,11 @@ public class Guest
         _guestList = guests;
     }
 
-    public static void ClearExtent()
-    {
-        _guestList.Clear();
-    }
+    public static void ClearExtent() => _guestList.Clear();
 
     internal static void FixIdCounter()
     {
-        if (_guestList.Count == 0)
-        {
-            nextId = 1;
-        }
-        else
-        {
-            var maxId = _guestList.Max(g => g.Id);
-            nextId = maxId + 1;
-        }
+        if (_guestList.Count == 0) nextId = 1;
+        else nextId = _guestList.Max(g => g.Id) + 1;
     }
 }

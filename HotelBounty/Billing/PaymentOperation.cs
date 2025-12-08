@@ -51,39 +51,71 @@ public class PaymentOperation
     }
 
     private Bill _bill;
-    public Bill Bill
+    
+    [XmlIgnore]
+    public Bill Bill => _bill;
+
+    public void SetBill(Bill bill, bool internalCall = false)
     {
-        get => _bill;
-        set
+        if (bill == null) throw new ArgumentNullException("The bill cannot be null.");
+        if (_bill == bill) return;
+        
+        if (_bill != null && _bill != bill)
+            throw new InvalidOperationException("Bill cannot be changed once it has been set.");
+        
+        if (Booking != null && bill.Booking != null && bill.Booking != Booking)
+            throw new ArgumentException("Bill booking does not match payment booking.");
+        
+        _bill = bill;
+        
+        if (!internalCall)
         {
-            if(value == null) throw new ArgumentNullException("The bill cannot be null.");
-            
-            if (_bill != null && _bill != value)
-                throw new InvalidOperationException("Bill cannot be changed once it has been set.");
-            
-            if (Booking != null && value.Booking != null && value.Booking != Booking)
-                throw new ArgumentException("Bill booking does not match payment booking.");
-            
-            _bill = value;
+            _bill.AddPaymentOperation(this, true);
         }
     }
     
-    private Booking _booking;
-    public Booking Booking
+    public void UnsetBill(bool internalCall = false)
     {
-        get => _booking;
-        set
+        if (_bill != null)
         {
-            if(value == null) throw new ArgumentNullException("The booking cannot be null.");
-            
-            if (_booking != null && _booking != value)
-                throw new InvalidOperationException("Booking cannot be changed once it has been set.");
-
-            
-            
-            _booking = value;
+            var oldBill = _bill;
+            _bill = null;
+            if (!internalCall) oldBill.RemovePaymentOperation(this, true);
         }
     }
+    
+    
+    private Booking _booking;
+    
+    [XmlIgnore]
+    public Booking Booking => _booking;
+
+    public void SetBooking(Booking booking, bool internalCall = false)
+    {
+        if (booking == null) throw new ArgumentNullException("The booking cannot be null.");
+        if (_booking == booking) return;
+        
+        if (_booking != null && _booking != booking)
+            throw new InvalidOperationException("Booking cannot be changed once it has been set.");
+        
+        _booking = booking;
+        
+        if (!internalCall)
+        {
+            _booking.AddPaymentOperation(this, true);
+        }
+    }
+    
+    public void UnsetBooking(bool internalCall = false)
+    {
+        if (_booking != null)
+        {
+            var oldBooking = _booking;
+            _booking = null;
+            if (!internalCall) oldBooking.RemovePaymentOperation(this, true);
+        }
+    }
+    
 
     public PaymentOperation()
     {
@@ -94,8 +126,10 @@ public class PaymentOperation
     public PaymentOperation(Bill bill, Booking booking, PaymentMethod method, decimal amount)
     {
         Id = nextId++;
-        Booking = booking;
-        Bill = bill;
+        
+        SetBooking(booking);
+        SetBill(bill);
+        
         PaymentMethod = method;
         Amount = amount;
         PaymentDate = DateTime.Now;

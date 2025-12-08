@@ -1,20 +1,27 @@
 using System;
 using System.Collections.Generic;
+using System.Linq; 
 using HotelBounty;
 using HotelBounty.Billing;
 using HotelBounty.Bookings;
 using HotelBounty.Enums;
 using HotelBounty.Rooms;
+using HotelBounty.ComplexAttributes; 
 using NUnit.Framework;
 
 namespace TestsHotelBounty;
 
 public class TestsBooking
 {
+    private Guest _guest;
+    private Address _address;
+
     [SetUp]
     public void Setup()
     {
         Booking.ClearExtent();
+        _address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
+        _guest = new Guest("Test Guest", DateTime.Now.AddYears(-25), _address, "12345678901", "1234567890");
     }
 
     [Test]
@@ -24,18 +31,23 @@ public class TestsBooking
         var checkOut = DateTime.Today.AddDays(3);
         
         Hotel hotel = new Hotel();
-        var room = new Standard(201, hotel, Occupancy.SINGLE, 100, false, true,true);
-        var booking = new Booking(checkIn, checkOut, "1234567890", room);
+        var room = new Standard(201, hotel, Occupancy.SINGLE, 100, false, true, true);
         
-        var bill1 = new Bill();
-        var bill2 = new Bill();
-        booking.Bills = new List<Bill> { bill1, bill2 };
+        var booking = new Booking(checkIn, checkOut, _guest, room);
+        
+        var bill1 = new Bill(booking); 
+        var bill2 = new Bill(booking);
+        
 
         Assert.That(booking.CheckInDate, Is.EqualTo(checkIn));
         Assert.That(booking.CheckOutDate, Is.EqualTo(checkOut));
-        Assert.That(booking.GuestCardNumber, Is.EqualTo("1234567890"));
+        
+        Assert.That(booking.Guest.GuestCardNumber, Is.EqualTo("1234567890"));
         Assert.That(booking.Room, Is.EqualTo(room));
-        CollectionAssert.AreEquivalent(new[] { bill1, bill2 }, booking.Bills);
+        
+        CollectionAssert.Contains(booking.Bills, bill1);
+        CollectionAssert.Contains(booking.Bills, bill2);
+        
         Assert.That(booking.Status, Is.EqualTo(BookingStatus.PREPARING));
     }
 
@@ -47,7 +59,7 @@ public class TestsBooking
 
         Assert.Throws<ArgumentException>(() =>
         {
-            var booking = new Booking(checkIn, checkOut, "1234567890");
+            var booking = new Booking(checkIn, checkOut, _guest);
         });
     }
 
@@ -56,7 +68,7 @@ public class TestsBooking
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
+        var booking = new Booking(checkIn, checkOut, _guest); 
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -69,7 +81,7 @@ public class TestsBooking
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
+        var booking = new Booking(checkIn, checkOut, _guest); 
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -87,7 +99,7 @@ public class TestsBooking
     {
         var checkIn = DateTime.Today.AddDays(2);
         var checkOut = DateTime.Today.AddDays(4);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
+        var booking = new Booking(checkIn, checkOut, _guest); 
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -107,10 +119,10 @@ public class TestsBooking
         var checkOut = DateTime.Today.AddDays(2);
         var hotel = new Hotel();
         var room = new Standard(101, hotel, Occupancy.SINGLE, 100, true, true, true);
-        var booking = new Booking(checkIn, checkOut, "1234567890", room);
+        
+        var booking = new Booking(checkIn, checkOut, _guest, room); 
 
         booking.SetRoom(null);
-
         Assert.IsNull(booking.Room);
     }
 
@@ -123,7 +135,8 @@ public class TestsBooking
         Hotel hotel = new Hotel();
         var room1 = new Standard(102, hotel, Occupancy.SINGLE, 100, true, true, true);
         var room2 = new Standard(103, hotel, Occupancy.DOUBLE, 150, true, true, true);
-        var booking = new Booking(checkIn, checkOut, "1234567890", room1);
+        
+        var booking = new Booking(checkIn, checkOut, _guest, room1); 
 
         booking.Status = BookingStatus.COMPLETED;
 
@@ -132,7 +145,7 @@ public class TestsBooking
             booking.SetRoom(room2); 
         });
         
-        var booking2 = new Booking(checkIn, checkOut, "0987654321");
+        var booking2 = new Booking(checkIn, checkOut, _guest); 
         booking2.SetRoom(room1); 
         booking2.CancelBooking();
 
@@ -141,65 +154,37 @@ public class TestsBooking
             booking2.SetRoom(room2); 
         });
     }
-
+    
     [Test]
-    public void Booking_EmptyGuestCardNumber_ThrowsException()
+    public void Booking_NullGuest_ThrowsException()
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(2);
-
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var booking = new Booking(checkIn, checkOut, "");
-        });
-    }
-
-    [Test]
-    public void Booking_InvalidGuestCardNumber_ThrowsException()
-    {
-        var checkIn = DateTime.Today.AddDays(1);
-        var checkOut = DateTime.Today.AddDays(2);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
-
-        Assert.Throws<ArgumentException>(() =>
-        {
-            booking.GuestCardNumber = "12345"; // too short
-        });
-
-        Assert.Throws<ArgumentException>(() =>
-        {
-            booking.GuestCardNumber = "abcdefghij"; // not digits
-        });
-    }
-
-    [Test]
-    public void Booking_SetBillsNullCollection_ThrowsException()
-    {
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1234567890");
 
         Assert.Throws<ArgumentNullException>(() =>
         {
-            booking.Bills = null;
+            var booking = new Booking(checkIn, checkOut, null);
         });
     }
-
+    
     [Test]
-    public void Booking_SetBillsWithNullItem_ThrowsException()
+    public void Booking_AddBill_Null_ThrowsException()
     {
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1234567890");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _guest);
 
-        Assert.Throws<ArgumentException>(() =>
+        Assert.Throws<ArgumentNullException>(() =>
         {
-            booking.Bills = new List<Bill> { new Bill(), null };
+            booking.AddBill(null);
         });
     }
+    
 
     [Test]
     public void Booking_MakeNewBooking_ValidDates_UpdatesDatesAndStatus()
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
+        var booking = new Booking(checkIn, checkOut, _guest); 
 
         var newCheckIn = DateTime.Today.AddDays(5);
         var newCheckOut = DateTime.Today.AddDays(7);
@@ -216,7 +201,7 @@ public class TestsBooking
     {
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-        var booking = new Booking(checkIn, checkOut, "1234567890");
+        var booking = new Booking(checkIn, checkOut, _guest);
 
         var newCheckIn = DateTime.Today.AddDays(7);
         var newCheckOut = DateTime.Today.AddDays(5);
@@ -230,7 +215,7 @@ public class TestsBooking
     [Test]
     public void Booking_CancelBooking_ChangesStatusToCanceled()
     {
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1234567890");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _guest); 
 
         booking.CancelBooking();
 
@@ -240,7 +225,7 @@ public class TestsBooking
     [Test]
     public void Booking_CancelBooking_WhenCompleted_ThrowsException()
     {
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1234567890");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _guest); 
         booking.MarkAsPaid();
         booking.MarkAsCompleted();
 
@@ -253,7 +238,7 @@ public class TestsBooking
     [Test]
     public void Booking_MarkAsPaid_WhenCanceled_ThrowsException()
     {
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1234567890");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _guest); 
         booking.CancelBooking();
 
         Assert.Throws<InvalidOperationException>(() =>
@@ -265,7 +250,7 @@ public class TestsBooking
     [Test]
     public void Booking_MarkAsCompleted_NotPaid_ThrowsException()
     {
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1234567890");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _guest); 
 
         Assert.Throws<InvalidOperationException>(() =>
         {
@@ -276,7 +261,7 @@ public class TestsBooking
     [Test]
     public void Booking_MarkAsCompleted_FromPaid_SetsStatusCompleted()
     {
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1234567890");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _guest); 
 
         booking.MarkAsPaid();
         booking.MarkAsCompleted();
@@ -287,7 +272,7 @@ public class TestsBooking
     [Test]
     public void Booking_StatusFromCompletedToOther_ThrowsException()
     {
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1234567890");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _guest); 
 
         booking.MarkAsPaid();
         booking.MarkAsCompleted();
@@ -303,9 +288,9 @@ public class TestsBooking
     {
         Booking.ClearExtent();
 
-        var b1 = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1111111111");
-        var b2 = new Booking(DateTime.Today.AddDays(3), DateTime.Today.AddDays(4), "2222222222");
-        var b3 = new Booking(DateTime.Today.AddDays(5), DateTime.Today.AddDays(6), "3333333333");
+        var b1 = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _guest); 
+        var b2 = new Booking(DateTime.Today.AddDays(3), DateTime.Today.AddDays(4), _guest); 
+        var b3 = new Booking(DateTime.Today.AddDays(5), DateTime.Today.AddDays(6), _guest); 
 
         b2.CancelBooking();
 

@@ -2,17 +2,21 @@ using HotelBounty;
 using HotelBounty.Bookings;
 using HotelBounty.Enums;
 using HotelBounty.Rooms;
+using HotelBounty.ComplexAttributes;
 
 namespace TestsHotelBounty;
 
 public class TestBookingRoomAssociation
 {
     private Hotel _hotel;
+    private Guest _dummyGuest;
     
     [SetUp]
     public void Setup()
     {
         _hotel = new Hotel(); 
+        _dummyGuest = new Guest("Dummy", DateTime.Now.AddYears(-20), new Address("C", "D", "S", 1), "12345678901", "1234567890");
+        
     }
     
     
@@ -20,7 +24,7 @@ public class TestBookingRoomAssociation
     public void AddBookingToRoom_ShouldCreateBidirectionalReference()
     {
         var room = new Room(101, _hotel, Occupancy.DOUBLE, 150, true, true, true);
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(3), "1234567890");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(3), _dummyGuest);
 
         booking.SetRoom(room);
 
@@ -44,7 +48,7 @@ public class TestBookingRoomAssociation
      public void AddBooking_ShouldNotThrow_WhenBookingIsValid()
      {
          var room = new Room(103, _hotel, Occupancy.SINGLE, 80, false, true, true);
-         var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "1234567890");
+         var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _dummyGuest);
 
          Assert.DoesNotThrow(() => room.AddBooking(booking));
          Assert.Contains(booking, room.Bookings.ToList());
@@ -57,7 +61,7 @@ public class TestBookingRoomAssociation
     public void RemoveBookingFromRoom_ShouldRemoveBidirectionalReference()
     {
         var room = new Room(102, _hotel, Occupancy.SINGLE, 100, false, true, true);
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(3), "0987654321");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(3), _dummyGuest);
         
         room.AddBooking(booking);
         
@@ -81,13 +85,13 @@ public class TestBookingRoomAssociation
     public void RemoveBooking_ShouldNotThrow_WhenBookingExistsOrNotInRoom()
     {
         var room = new Room(104, _hotel, Occupancy.SINGLE, 90, true, true, true);
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(3), "0987654321");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(3), _dummyGuest);
 
         room.AddBooking(booking);
         Assert.DoesNotThrow(() => room.RemoveBooking(booking));
         Assert.IsEmpty(room.Bookings);
 
-        var newBooking = new Booking(DateTime.Today.AddDays(2), DateTime.Today.AddDays(4), "1122334455");
+        var newBooking = new Booking(DateTime.Today.AddDays(2), DateTime.Today.AddDays(4), _dummyGuest);
         Assert.DoesNotThrow(() => room.RemoveBooking(newBooking));
     }
     
@@ -98,7 +102,7 @@ public class TestBookingRoomAssociation
     {
         var room1 = new Standard(103, _hotel, Occupancy.SINGLE, 100, true, true, true);
         var room2 = new Standard(104, _hotel, Occupancy.DOUBLE, 150, true, true, true);
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "5555555555", room1);
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _dummyGuest, room1);
 
         booking.SetRoom(room2);
         
@@ -113,7 +117,7 @@ public class TestBookingRoomAssociation
     public void Booking_SetRoomToNull_ThrowsExceptionForCompletedOrCanceled()
     {
         var room = new Standard(105, _hotel, Occupancy.SINGLE, 100, true, true, true);
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "9999999999", room);
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _dummyGuest, room);
         
         booking.Status = BookingStatus.COMPLETED;
 
@@ -122,7 +126,7 @@ public class TestBookingRoomAssociation
             booking.SetRoom(null);
         });
         
-        var booking2 = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "8888888888");
+        var booking2 = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _dummyGuest);
         booking2.SetRoom(room);
         booking2.CancelBooking();
 
@@ -136,7 +140,7 @@ public class TestBookingRoomAssociation
     public void Room_AddBooking_ShouldNotDuplicate()
     {
         var room = new Room(106, _hotel, Occupancy.SINGLE, 80, false, true, true);
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), "6677889900");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _dummyGuest);
 
         room.AddBooking(booking);
         room.AddBooking(booking);
@@ -149,7 +153,7 @@ public class TestBookingRoomAssociation
     {
         var room1 = new Room(103, _hotel, Occupancy.DOUBLE, 120, true, true, true);
         var room2 = new Room(104, _hotel, Occupancy.DOUBLE, 130, true, true, true);
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(4), "1122334455");
+        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(4), _dummyGuest);
         booking.SetRoom(room1);
 
         booking.SetRoom(room2);

@@ -81,14 +81,21 @@ public class TestsEncapsulation
     public void Booking_ModifyingProperty_UpdateObjectButNotBypassEncapsulation()
     {
         Booking.ClearExtent();
+        var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
+        var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
+        var room = new Standard(101, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var guest = new Guest("Test Guest", DateTime.Today.AddYears(-25), address, "12345678901", "1234567890");
+
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
-
-        var booking = new Booking(checkIn, checkOut, "1234567890");
-        booking.GuestCardNumber = "0987654321";
+        
+        var booking = new Booking(checkIn, checkOut, guest, room);
+        
+        var newDate = checkOut.AddDays(1);
+        booking.CheckOutDate = newDate;
 
         var extentBooking = Booking.GetExtent()[0];
-        Assert.That(extentBooking.GuestCardNumber, Is.EqualTo("0987654321"));
+        Assert.That(extentBooking.CheckOutDate, Is.EqualTo(newDate));
 
         var extent = Booking.GetExtent();
         Assert.Throws<NotSupportedException>(() =>
@@ -107,7 +114,10 @@ public class TestsEncapsulation
         var checkOut = DateTime.Today.AddDays(3);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
         var room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
-        var booking = new Booking(checkIn, checkOut, "1234567890", room);
+        var address = new Address("C", "D", "S", 1);
+        var guest = new Guest("G", DateTime.Today.AddYears(-25), address, "12345678901", "222");
+        
+        var booking = new Booking(checkIn, checkOut, guest, room);
         
         var bill = new Bill(booking);
 
@@ -119,6 +129,7 @@ public class TestsEncapsulation
         var extent = Bill.GetExtent();
         Assert.Throws<NotSupportedException>(() =>
             ((System.Collections.Generic.ICollection<Bill>)extent).Add(new Bill())
+
         );
     }
     
@@ -134,7 +145,10 @@ public class TestsEncapsulation
         var checkOut = DateTime.Today.AddDays(3);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
         var room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
-        var booking = new Booking(checkIn, checkOut, "1234567890", room);
+        var address = new Address("C", "D", "S", 1);
+        var guest = new Guest("G", DateTime.Today.AddYears(-25), address, "12345678901", "222");
+        
+        var booking = new Booking(checkIn, checkOut, guest, room);
 
         var bill = new Bill(booking);
 
