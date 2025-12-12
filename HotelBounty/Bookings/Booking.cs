@@ -6,6 +6,7 @@ using System.Xml.Serialization;
 using HotelBounty.Billing;
 using HotelBounty.Enums;
 using HotelBounty.Rooms;
+using ArgumentException = System.ArgumentException;
 
 namespace HotelBounty.Bookings;
 
@@ -17,8 +18,6 @@ public class Booking
     public int Id { get; set; }
     
     private HashSet<PaymentOperation> _paymentOperations = new HashSet<PaymentOperation>();
-    
-    [XmlIgnore]
     public IReadOnlyCollection<PaymentOperation> PaymentOperations => _paymentOperations.ToList().AsReadOnly();
 
     public void AddPaymentOperation(PaymentOperation operation, bool internalCall = false)
@@ -49,11 +48,7 @@ public class Booking
         }
     }
     
-    
-    
-    
     private Room _room;
-    [XmlIgnore]
     public Room Room => _room;
 
     public void SetRoom(Room room, bool internalCall = false)
@@ -78,14 +73,11 @@ public class Booking
     }
 
     private Guest _guest;
-    
-    [XmlIgnore]
     public Guest Guest => _guest;
-
     public void SetGuest(Guest guest, bool internalCall = false)
     {
-        if (guest == null) throw new ArgumentNullException(nameof(guest));
-        if (_guest == guest) return;
+        if (guest == null) throw new ArgumentNullException("The guest can't be null");
+        if (_guest == guest) throw new ArgumentException("The guest can't be the same");
 
         if (_guest != null)
         {
@@ -95,13 +87,26 @@ public class Booking
         }
 
         _guest = guest;
-        
         if (!internalCall)
         {
-            _guest.AddBooking(this, true);
+            guest.AddBooking(this, true);
         }
     }
 
+    public void UnsetGuest(bool internalCall = false)
+    {
+        if (_guest != null)
+        {
+            var oldGuest = _guest;
+            _guest = null;
+
+            if (!internalCall)
+                oldGuest.RemoveBooking(this, true);
+        }
+        else 
+            throw new ArgumentNullException("The guest is not set.");
+    }
+    
     private HashSet<Bill> _bills = new HashSet<Bill>();
     
     [XmlIgnore]
@@ -128,6 +133,7 @@ public class Booking
             _bills.Remove(bill);
         }
     }
+    
     
 
     private DateTime _checkInDate;
