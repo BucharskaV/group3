@@ -14,29 +14,45 @@ public class Guest
     public int Id { get; set; }
     
     private HashSet<Booking> _bookings = new HashSet<Booking>();
-    
-    [XmlIgnore]
     public IReadOnlyCollection<Booking> Bookings => _bookings.ToList().AsReadOnly();
-
     public void AddBooking(Booking booking, bool internalCall = false)
     {
-        if (booking == null) throw new ArgumentNullException(nameof(booking));
-        if (_bookings.Contains(booking)) return;
+        if (booking == null) throw new ArgumentNullException("The booking can't be null");
+        if (_bookings.Contains(booking)) throw new ArgumentException("The booking is already in the list");
 
         _bookings.Add(booking);
-        
         if (!internalCall)
         {
             booking.SetGuest(this, true);
         }
     }
-    
+
     public void RemoveBooking(Booking booking, bool internalCall = false)
     {
-        if (booking == null) throw new ArgumentNullException(nameof(booking));
-        if (_bookings.Contains(booking))
+        if (booking == null) throw new ArgumentNullException("The booking can't be null");
+        if (!_bookings.Contains(booking)) return;
+
+        if (_bookings.Count <= 1)
+            throw new InvalidOperationException("Guest must have at least one booking");
+
+        _bookings.Remove(booking);
+        if (!internalCall)
         {
-            _bookings.Remove(booking);
+            booking.SetGuest(null, true);
+        }
+    }
+    private string _guestCardNumber;
+    public string GuestCardNumber
+    {
+        get => _guestCardNumber;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                throw new ArgumentException("Guest card number cannot be empty.");
+
+            if (!value.All(char.IsDigit) || value.Length != 10)
+                throw new ArgumentException("Card number must be 10 digits.");
+            _guestCardNumber = value;
         }
     }
 
@@ -87,18 +103,6 @@ public class Guest
             if (string.IsNullOrWhiteSpace(value)) throw new ArgumentException("PESEL cannot be empty.");
             if (!string.IsNullOrEmpty(value) && value.Length != 11) throw new ArgumentException("Pesel should contain 11 characters");
             _pesel = value;
-        }
-    }
-
-    private string _guestCardNumber;
-    public string GuestCardNumber
-    {
-        get => _guestCardNumber;
-        set
-        {
-            if(string.IsNullOrEmpty(value)) throw new ArgumentException("Card number empty");
-            if (value.Length != 10 && !value.All(char.IsDigit)) throw new ArgumentException("Card number must be 10 digits");
-            _guestCardNumber = value;
         }
     }
 

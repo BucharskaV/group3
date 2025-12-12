@@ -27,8 +27,6 @@ public class Bill
     
     
     private HashSet<PaymentOperation> _paymentOperations = new HashSet<PaymentOperation>();
-    
-    [XmlIgnore]
     public IReadOnlyCollection<PaymentOperation> PaymentOperations => _paymentOperations.ToList().AsReadOnly();
 
     public void AddPaymentOperation(PaymentOperation operation, bool internalCall = false)
@@ -60,6 +58,7 @@ public class Bill
     }
     
     
+    
     private Booking _booking;
     
     [XmlIgnore]
@@ -77,7 +76,7 @@ public class Bill
         
         if (!internalCall)
         {
-            _booking.AddBill(this, true);
+           _booking.AddBill(this, true);
         }
     }
 

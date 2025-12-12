@@ -51,8 +51,6 @@ public class PaymentOperation
     }
 
     private Bill _bill;
-    
-    [XmlIgnore]
     public Bill Bill => _bill;
 
     public void SetBill(Bill bill, bool internalCall = false)
@@ -84,10 +82,7 @@ public class PaymentOperation
         }
     }
     
-    
     private Booking _booking;
-    
-    [XmlIgnore]
     public Booking Booking => _booking;
 
     public void SetBooking(Booking booking, bool internalCall = false)
@@ -116,7 +111,6 @@ public class PaymentOperation
         }
     }
     
-
     public PaymentOperation()
     {
         Id = nextId++;
