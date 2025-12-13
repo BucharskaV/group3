@@ -43,19 +43,20 @@ public class TestBookingRoomAssociation
          Assert.AreEqual("booking", ex.ParamName);
      }
      
-
+     
      [Test]
-     public void AddBooking_ShouldNotThrow_WhenBookingIsValid()
+     public void RemoveBooking_ShouldThrow_WhenBookingIsNotInRoom()
      {
-         var room = new Room(103, _hotel, Occupancy.SINGLE, 80, false, true, true);
-         var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _dummyGuest);
+         var room = new Room(104, _hotel, Occupancy.SINGLE, 90, true, true, true);
+         var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(3), _dummyGuest);
 
-         Assert.DoesNotThrow(() => room.AddBooking(booking));
-         Assert.Contains(booking, room.Bookings.ToList());
+         var ex = Assert.Throws<InvalidOperationException>(() =>
+             room.RemoveBooking(booking)
+         );
+
+         Assert.AreEqual("This booking is not assigned to the room.", ex.Message);
      }
 
-        
-    
     
     [Test]
     public void RemoveBookingFromRoom_ShouldRemoveBidirectionalReference()
@@ -137,16 +138,20 @@ public class TestBookingRoomAssociation
     }
     
     [Test]
-    public void Room_AddBooking_ShouldNotDuplicate()
+    public void Room_AddBooking_ShouldThrow_WhenDuplicateBookingAdded()
     {
         var room = new Room(106, _hotel, Occupancy.SINGLE, 80, false, true, true);
         var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _dummyGuest);
 
         room.AddBooking(booking);
-        room.AddBooking(booking);
 
-        Assert.AreEqual(1, room.Bookings.Count);
+        var ex = Assert.Throws<InvalidOperationException>(() =>
+            room.AddBooking(booking)
+        );
+
+        Assert.AreEqual("This booking is already assigned to the room.", ex.Message);
     }
+
     
     [Test]
     public void ChangeBookingRoom_ShouldUpdateReferencesProperly()

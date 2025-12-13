@@ -88,4 +88,17 @@ public class TestHotelRoomAssociation
         Assert.AreEqual("When creating the room the Hotel cannot be null", ex.ParamName);
     }
     
+    [Test]
+    public void ChangeRoomNumber_ShouldUpdateHotelBinding()
+    {
+        var room = new Room(201, _hotel1, Occupancy.SINGLE, 100, true, true, true);
+
+        room.RoomNumber = 202;
+
+        Assert.IsFalse(_hotel1.Rooms.ContainsKey(201));
+        Assert.IsTrue(_hotel1.Rooms.ContainsKey(202));
+        Assert.AreEqual(room, _hotel1.GetRoom(202));
+    }
+
+    
 }

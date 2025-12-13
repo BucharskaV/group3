@@ -160,6 +160,19 @@ public class Hotel
         }
     }
     
+    internal void OnRoomNumberChanging(Room room, int newNumber)
+    {
+        if (!_rooms.ContainsKey(room.RoomNumber))
+            throw new InvalidOperationException("Room not found in hotel.");
+
+        if (_rooms.ContainsKey(newNumber))
+            throw new InvalidOperationException(
+                $"Room {newNumber} already exists in this hotel.");
+
+        _rooms.Remove(room.RoomNumber);
+        _rooms[newNumber] = room;
+    }
+
     
     public void AddRoom(Room room, bool internalCall = false)
     {

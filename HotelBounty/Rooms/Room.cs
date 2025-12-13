@@ -16,15 +16,27 @@ public class Room
     private static int nextId = 1;
     
     private int _roomNumber;
+    
     public int RoomNumber
     {
         get => _roomNumber;
         set
         {
-            if (value <= 0) throw new ArgumentException("Room number must be positive.");
+            if (value <= 0)
+                throw new ArgumentException("Room number must be positive.");
+
+            if (_roomNumber == value)
+                return;
+
+            if (_hotel != null)
+            {
+                _hotel.OnRoomNumberChanging(this, value);
+            }
+
             _roomNumber = value;
         }
     }
+
     public int Id { get; set; }
     
     private HashSet<Booking> _bookings = new HashSet<Booking>();
@@ -37,7 +49,7 @@ public class Room
             throw new ArgumentNullException(nameof(booking));
 
         if (_bookings.Contains(booking))
-            return;
+            throw new InvalidOperationException("This booking is already assigned to the room.");
 
         _bookings.Add(booking);
 
@@ -51,7 +63,7 @@ public class Room
             throw new ArgumentNullException(nameof(booking));
 
         if (!_bookings.Contains(booking))
-            return;
+            throw new InvalidOperationException("This booking is not assigned to the room.");
 
         _bookings.Remove(booking);
 
@@ -59,13 +71,15 @@ public class Room
             booking.SetRoom(null, true);
     }
 
+
     internal void SetBookingRoom(Booking booking, bool internalCall = false)
     {
         if (booking == null)
-            return;
+            throw new ArgumentNullException(nameof(booking));
 
         AddBooking(booking, internalCall);
     }
+
 
     private Occupancy _occupancy;
 
