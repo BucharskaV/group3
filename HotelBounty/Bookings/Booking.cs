@@ -18,12 +18,14 @@ public class Booking
     public int Id { get; set; }
     
     private HashSet<PaymentOperation> _paymentOperations = new HashSet<PaymentOperation>();
+    
+    [XmlIgnore] 
     public IReadOnlyCollection<PaymentOperation> PaymentOperations => _paymentOperations.ToList().AsReadOnly();
 
     public void AddPaymentOperation(PaymentOperation operation, bool internalCall = false)
     {
         if (operation == null) throw new ArgumentNullException(nameof(operation));
-        if (_paymentOperations.Contains(operation)) return;
+        if (_paymentOperations.Contains(operation)) throw new InvalidOperationException("Payment operation is already associated with this booking.");
 
         _paymentOperations.Add(operation);
         
@@ -37,14 +39,14 @@ public class Booking
     {
         if (operation == null) throw new ArgumentNullException(nameof(operation));
         
-        if (_paymentOperations.Contains(operation))
-        {
-            _paymentOperations.Remove(operation);
+        if (!_paymentOperations.Contains(operation))
+            throw new InvalidOperationException("Payment operation not found in this booking.");
+
+        _paymentOperations.Remove(operation);
             
-            if (!internalCall)
-            {
-                operation.UnsetBooking(true);
-            }
+        if (!internalCall)
+        {
+            operation.UnsetBooking(true);
         }
     }
     
@@ -56,7 +58,7 @@ public class Booking
         if (Status == BookingStatus.COMPLETED || Status == BookingStatus.CANCELED)
             throw new InvalidOperationException("Cannot change room for completed or canceled booking");
 
-        if (_room == room) return;
+        if (_room == room) throw new InvalidOperationException("This room is already assigned to the booking.");
         
         if (_room != null)
         {
@@ -107,32 +109,7 @@ public class Booking
             throw new ArgumentNullException("The guest is not set.");
     }
     
-    private HashSet<Bill> _bills = new HashSet<Bill>();
     
-    [XmlIgnore]
-    public IReadOnlyCollection<Bill> Bills => _bills.ToList().AsReadOnly();
-
-    public void AddBill(Bill bill, bool internalCall = false)
-    {
-        if (bill == null) throw new ArgumentNullException(nameof(bill));
-        if (_bills.Contains(bill)) return;
-
-        _bills.Add(bill);
-        
-        if (!internalCall)
-        {
-            bill.SetBooking(this, true);
-        }
-    }
-    
-    public void RemoveBill(Bill bill, bool internalCall = false)
-    {
-        if (bill == null) throw new ArgumentNullException(nameof(bill));
-        if (_bills.Contains(bill))
-        {
-            _bills.Remove(bill);
-        }
-    }
     
     
 

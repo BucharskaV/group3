@@ -51,18 +51,17 @@ public class PaymentOperation
     }
 
     private Bill _bill;
+    [XmlIgnore]
     public Bill Bill => _bill;
 
     public void SetBill(Bill bill, bool internalCall = false)
     {
         if (bill == null) throw new ArgumentNullException("The bill cannot be null.");
-        if (_bill == bill) return;
+        if (_bill == bill) throw new InvalidOperationException("Bill is already set.");
         
         if (_bill != null && _bill != bill)
             throw new InvalidOperationException("Bill cannot be changed once it has been set.");
         
-        if (Booking != null && bill.Booking != null && bill.Booking != Booking)
-            throw new ArgumentException("Bill booking does not match payment booking.");
         
         _bill = bill;
         
@@ -83,12 +82,13 @@ public class PaymentOperation
     }
     
     private Booking _booking;
+    [XmlIgnore]
     public Booking Booking => _booking;
 
     public void SetBooking(Booking booking, bool internalCall = false)
     {
         if (booking == null) throw new ArgumentNullException("The booking cannot be null.");
-        if (_booking == booking) return;
+        if (_booking == booking) throw new InvalidOperationException("Booking is already set.");
         
         if (_booking != null && _booking != booking)
             throw new InvalidOperationException("Booking cannot be changed once it has been set.");

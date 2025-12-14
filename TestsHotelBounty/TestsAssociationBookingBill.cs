@@ -33,22 +33,8 @@ public class TestsAssociationBookingBill
     public void CreateBill_WorksCorrectly()
     {
         var bill = new Bill(_booking);
-        Assert.That(bill.Booking, Is.EqualTo(_booking));
-        Assert.IsTrue(_booking.Bills.Contains(bill));
-    }
-
-    [Test]
-    public void SetBooking_WorksCorrectly()
-    {
-        var bill = new Bill(_booking);
-        
-        var room2 = new Standard(102, new Hotel("H2", "Warsaw", "123456789", 5), Occupancy.SINGLE, 100, true, true, true);
-        var booking2 = new Booking(DateTime.Today.AddDays(5), DateTime.Today.AddDays(7), _booking.Guest, room2);
-
-        bill.SetBooking(booking2);
-
-        Assert.That(bill.Booking, Is.EqualTo(booking2));
-        Assert.IsTrue(booking2.Bills.Contains(bill));
+        Assert.That(bill.Id, Is.GreaterThan(0));
+        Assert.That(bill.TotalPrice, Is.GreaterThan(0));
     }
 
     [Test]
@@ -57,16 +43,5 @@ public class TestsAssociationBookingBill
         Assert.Throws<ArgumentNullException>(() => new Bill(null));
     }
 
-    [Test]
-    public void SetBooking_NullBooking_ThrowsException()
-    {
-        var bill = new Bill(_booking);
-        Assert.Throws<ArgumentNullException>(() => bill.SetBooking(null));
-    }
-    
-    [Test]
-    public void AddBill_NullBill_ThrowsException()
-    {
-        Assert.Throws<ArgumentNullException>(() => _booking.AddBill(null));
-    }
+   
 }

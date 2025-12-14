@@ -24,10 +24,11 @@ namespace TestsHotelBounty
             Hotel.ClearExtent();
             Address.ClearExtent();
             Bill.ClearExtent();
+            PaymentOperation.ClearExtent();
         }
 
         [Test]
-        public void SaveAndLoad_ShouldPreserveDataCount()
+        public void SaveAndLoad_ShouldPreserveAllDataAndNewAssociations()
         {
             var address = new Address("City", "District", "Street", 1);
             var hotel = new Hotel("Hotel Bounty", "Warsaw", "123456789", 5);
@@ -37,18 +38,22 @@ namespace TestsHotelBounty
             var booking = new Booking(DateTime.Now.AddDays(1), DateTime.Now.AddDays(5), guest, room);
             var bill = new Bill(booking);
             
+            var payment = new PaymentOperation(bill, booking, PaymentMethod.CARD, 1000m); 
+            
             Assert.AreEqual(1, Booking.GetExtent().Count);
             Assert.AreEqual(1, Guest.GetExtent().Count);
+            Assert.AreEqual(1, Bill.GetExtent().Count);
+            Assert.AreEqual(1, PaymentOperation.GetExtent().Count); 
             
             string testFileName = "test_extent.xml";
             ExtentPersistence.Save(testFileName);
-
             
             Booking.ClearExtent();
             Guest.ClearExtent();
             Room.ClearExtent();
             Hotel.ClearExtent();
             Bill.ClearExtent();
+            PaymentOperation.ClearExtent(); 
 
             Assert.AreEqual(0, Booking.GetExtent().Count); 
             
@@ -61,9 +66,7 @@ namespace TestsHotelBounty
             Assert.AreEqual(1, Guest.GetExtent().Count, "Guest count mismatch");
             Assert.AreEqual(1, Booking.GetExtent().Count, "Booking count mismatch");
             Assert.AreEqual(1, Bill.GetExtent().Count, "Bill count mismatch");
-            
-            var loadedBooking = Booking.GetExtent().First();
-            Assert.IsNotNull(loadedBooking);
+            Assert.AreEqual(1, PaymentOperation.GetExtent().Count, "PaymentOperation count mismatch"); 
             
             if (File.Exists(testFileName)) File.Delete(testFileName);
         }

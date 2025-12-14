@@ -27,12 +27,14 @@ public class Bill
     
     
     private HashSet<PaymentOperation> _paymentOperations = new HashSet<PaymentOperation>();
+    
+    [XmlIgnore]
     public IReadOnlyCollection<PaymentOperation> PaymentOperations => _paymentOperations.ToList().AsReadOnly();
 
     public void AddPaymentOperation(PaymentOperation operation, bool internalCall = false)
     {
         if (operation == null) throw new ArgumentNullException(nameof(operation));
-        if (_paymentOperations.Contains(operation)) return;
+        if (_paymentOperations.Contains(operation)) throw new InvalidOperationException("Payment operation already in bill.");
 
         _paymentOperations.Add(operation);
 
@@ -46,39 +48,20 @@ public class Bill
     {
         if (operation == null) throw new ArgumentNullException(nameof(operation));
         
-        if (_paymentOperations.Contains(operation))
-        {
-            _paymentOperations.Remove(operation);
+        if (!_paymentOperations.Contains(operation))
+            throw new InvalidOperationException("Payment operation not found."); // Исключение
+
+        _paymentOperations.Remove(operation);
             
-            if (!internalCall)
-            {
-                operation.UnsetBill(true);
-            }
-        }
-    }
-    
-    
-    
-    private Booking _booking;
-    
-    [XmlIgnore]
-    public Booking Booking => _booking;
-
-    public void SetBooking(Booking booking, bool internalCall = false)
-    {
-        if (booking == null) throw new ArgumentNullException(nameof(booking), "The booking cannot be null.");
-        if (_booking == booking) return;
-        
-        if (_booking != null && _booking != booking)
-             throw new InvalidOperationException("Booking cannot be changed once it has been set (Logic constraint).");
-
-        _booking = booking;
-        
         if (!internalCall)
         {
-           _booking.AddBill(this, true);
+            operation.UnsetBill(true);
         }
     }
+    
+    
+    
+  
 
     private const decimal TaxRate = 0.08m;
 
@@ -94,10 +77,18 @@ public class Bill
 
         Id = nextId++;
         
-        SetBooking(booking);
-        
-        GenerateBill();
+        var nights = (booking.CheckOutDate - booking.CheckInDate).Days;
+        if (nights <= 0) nights = 1;
+        var basePrice = (decimal)booking.Room.Price * nights;
+        TotalPrice = basePrice + basePrice * TaxRate;
 
+        AddBill(this);
+    }
+    
+    public Bill(decimal price)
+    {
+        Id = nextId++;
+        TotalPrice = price;
         AddBill(this);
     }
 
@@ -106,19 +97,7 @@ public class Bill
         if (bill == null) throw new ArgumentNullException(nameof(bill));
         _billList.Add(bill);
     }
-
-    public void GenerateBill()
-    {
-        if (Booking == null) throw new InvalidOperationException("Booking must be set to generate bill");
-
-        var nights = (Booking.CheckOutDate - Booking.CheckInDate).Days;
-        if (nights <= 0) nights = 1;
-        
-        var basePrice = (decimal)Booking.Room.Price * nights;
-        var tax = basePrice * TaxRate;
-
-        TotalPrice = basePrice + tax;
-    }
+    
 
     public static ReadOnlyCollection<Bill> GetExtent() => _billList.AsReadOnly();
     internal static void ReplaceExtent(List<Bill> bills) => _billList = bills ?? throw new ArgumentNullException(nameof(bills));

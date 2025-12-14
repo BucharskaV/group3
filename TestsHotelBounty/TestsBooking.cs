@@ -36,8 +36,6 @@ public class TestsBooking
         var booking = new Booking(checkIn, checkOut, _guest, room);
         
         var bill1 = new Bill(booking); 
-        var bill2 = new Bill(booking);
-        
 
         Assert.That(booking.CheckInDate, Is.EqualTo(checkIn));
         Assert.That(booking.CheckOutDate, Is.EqualTo(checkOut));
@@ -45,8 +43,6 @@ public class TestsBooking
         Assert.That(booking.Guest.GuestCardNumber, Is.EqualTo("1234567890"));
         Assert.That(booking.Room, Is.EqualTo(room));
         
-        CollectionAssert.Contains(booking.Bills, bill1);
-        CollectionAssert.Contains(booking.Bills, bill2);
         
         Assert.That(booking.Status, Is.EqualTo(BookingStatus.PREPARING));
     }
@@ -167,16 +163,6 @@ public class TestsBooking
         });
     }
     
-    [Test]
-    public void Booking_AddBill_Null_ThrowsException()
-    {
-        var booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(2), _guest);
-
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            booking.AddBill(null);
-        });
-    }
     
 
     [Test]
