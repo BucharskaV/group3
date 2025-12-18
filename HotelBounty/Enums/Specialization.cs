@@ -3,5 +3,5 @@
 [Serializable]
 public enum Specialization
 {
-    ROOMS, HALLS, KITCHEN
+    DEFAULT, ROOMS, HALLS, KITCHEN
 }

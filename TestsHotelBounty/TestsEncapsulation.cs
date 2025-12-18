@@ -17,13 +17,13 @@ public class TestsEncapsulation
         var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
         var block = new HotelBlock(hotel,"First hotel block", address);
-        var e1 = new Cleaner("Jakub", "Ivanov", 100, block, null, Specialization.ROOMS);
+        var e1 = new Employee("Jakub", "Ivanov", 100, block, EmployeeRole.Cleaner, null);
         e1.Name = "A";
         var extentEmployee = Employee.GetExtent()[0];
         Assert.That(extentEmployee.Name, Is.EqualTo("A"));
         var extent = Employee.GetExtent();
         Assert.Throws<NotSupportedException>(() =>
-            ((System.Collections.Generic.ICollection<Employee>)extent).Add(new Cleaner())
+            ((System.Collections.Generic.ICollection<Employee>)extent).Add(new Employee())
         );
     }
     
@@ -115,7 +115,7 @@ public class TestsEncapsulation
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
         var room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
         var address = new Address("C", "D", "S", 1);
-        var guest = new Guest("G", DateTime.Today.AddYears(-25), address, "12345678901", "222");
+        var guest = new Guest("G", DateTime.Today.AddYears(-25), address, "12345678901", "0000000001");
         
         var booking = new Booking(checkIn, checkOut, guest, room);
         
@@ -146,7 +146,7 @@ public class TestsEncapsulation
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
         var room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
         var address = new Address("C", "D", "S", 1);
-        var guest = new Guest("G", DateTime.Today.AddYears(-25), address, "12345678901", "222");
+        var guest = new Guest("G", DateTime.Today.AddYears(-25), address, "12345678901", "0000000001");
         
         var booking = new Booking(checkIn, checkOut, guest, room);
 
