@@ -21,8 +21,8 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void SetSupervisor_WorksCorrectly()
     {
-        var supervisor = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
+        var supervisor = new Employee("Jakub", "Ivanov", 100, _block, EmployeeRole.Cleaner, null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
         
         employee.SetSupervisor(supervisor);
         
@@ -33,9 +33,9 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void RemoveSupervisor_WorksCorrectly()
     {
-        var supervisor = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
-        
+        var supervisor = new Employee("Jakub", "Ivanov", 100, _block, EmployeeRole.Cleaner, null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
+
         employee.SetSupervisor(supervisor);
         employee.RemoveSupervisor();
         
@@ -46,9 +46,10 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void UpdateSupervisor_WorksCorrectly()
     {
-        var supervisor1 = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
-        var supervisor2 = new Receptionist("Milly", "Ivanova", 100, _block, null, "MyKe12334552");
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
+        var supervisor1 = new Employee("Bob", "Ivanov", 100, _block,EmployeeRole.Receptionist, null);
+        var supervisor2 = new Employee("Jakub", "Ivanov", 100, _block, EmployeeRole.Receptionist, null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
+
         
         employee.SetSupervisor(supervisor1);
         employee.SetSupervisor(supervisor2);
@@ -60,7 +61,7 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void SetSupervisor_NullSupervisor_ThrowsException()
     {
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
 
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -71,7 +72,7 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void SetSupervisor_SupervisorItself_ThrowsException()
     {
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
 
         Assert.Throws<InvalidOperationException>(() =>
         {
@@ -82,8 +83,8 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void SetSupervisor_SupervisorTwice_ThrowsException()
     {
-        var supervisor1 = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
+        var supervisor1 = new Employee("Bob", "Ivanov", 100, _block,EmployeeRole.Receptionist, null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
 
         employee.SetSupervisor(supervisor1);
         
@@ -96,9 +97,9 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void SetSupervisor_SuperviseeTwice_ThrowsException()
     {
-        var supervisor = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
-        
+        var supervisor = new Employee("Jakub", "Ivanov", 100, _block, EmployeeRole.Cleaner, null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
+
         employee.SetSupervisor(supervisor);
         
         Assert.Throws<InvalidOperationException>(() =>
@@ -110,7 +111,7 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void RemoveSupervisor_NullSupervisor_ThrowsException()
     {
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
         
         Assert.Throws<InvalidOperationException>(() =>
         {
@@ -121,7 +122,7 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void AddSupervisee_NullSupervisee_ThrowsException()
     {
-        var supervisor = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
+        var supervisor = new Employee("Jakub", "Ivanov", 100, _block, EmployeeRole.Cleaner, null);
         
         Assert.Throws<ArgumentNullException>(() =>
         {
@@ -132,8 +133,7 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void AddSupervisee_SuperviseeItself_ThrowsException()
     {
-        var employee = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
-        
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
         Assert.Throws<InvalidOperationException>(() =>
         {
             employee.AddSupervisee(employee);
@@ -143,9 +143,9 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void AddSupervisee_TwiceSupervisee_ThrowsException()
     {
-        var supervisor1 = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
-        
+        var supervisor1 = new Employee("Bob", "Ivanov", 100, _block,EmployeeRole.Receptionist, null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
+
         Assert.Throws<InvalidOperationException>(() =>
         {
             supervisor1.AddSupervisee(employee);
@@ -155,7 +155,7 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void RemoveSupervisee_NullSupervisee_ThrowsException()
     {
-        var supervisor1 = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
+        var supervisor1 = new Employee("Bob", "Ivanov", 100, _block,EmployeeRole.Receptionist, null);
         Assert.Throws<ArgumentNullException>(() =>
         {
             supervisor1.RemoveSupervisee(null);
@@ -165,12 +165,12 @@ public class TestsAssociationReflexEmployee
     [Test]
     public void RemoveSupervisee_NotSupervisedSupervisee_ThrowsException()
     {
-        var supervisor1 = new Receptionist("Bob", "Ivanov", 100, _block, null, "MyKe12334552");
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, _block, null,"MyKe12334552", null);
-
+        var supervisor = new Employee("Jakub", "Ivanov", 100, _block, EmployeeRole.Cleaner, null);
+        var employee = new Employee("Masha", "Ivanova", 100, _block, EmployeeRole.SecurityGuard, null);
+        
         Assert.Throws<InvalidOperationException>(() =>
         {
-            supervisor1.RemoveSupervisee(employee);
+            supervisor.RemoveSupervisee(employee);
         });
     }
     

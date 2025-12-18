@@ -10,8 +10,15 @@ public class TestsEmployee
     public void Employee_SetAndGetPropertiesCorrectly()
     {
         var block = new HotelBlock();
-        var employee = new Cleaner("Anna", "Smith", 200, block, null, Specialization.ROOMS);
-        
+        var employee = new Employee(
+            "Anna",
+            "Smith",
+            200,
+            block,
+            EmployeeRole.Cleaner
+        );
+
+        employee.Specialization = Specialization.ROOMS;
         Assert.That(employee.Name, Is.EqualTo("Anna"));
         Assert.That(employee.Surname, Is.EqualTo("Smith"));
         Assert.That(employee.Bonus, Is.EqualTo(200));
@@ -31,15 +38,16 @@ public class TestsEmployee
     [Test]
     public void Employee_EmptyNameOrSurname_ThrowsException()
     {
+        var block = new HotelBlock();
+
         Assert.Throws<ArgumentException>(() =>
         {
-            var block = new HotelBlock();
-            var emp1 = new Cleaner("", "Ivanov", 100, block, null, Specialization.ROOMS);
+            new Employee("", "Ivanov", 100, block, EmployeeRole.Cleaner);
         });
+
         Assert.Throws<ArgumentException>(() =>
         {
-            var block = new HotelBlock();
-            var emp2 = new Cleaner("Jakub", "", 100, block, null, Specialization.ROOMS);
+            new Employee("Jakub", "", 100, block, EmployeeRole.Cleaner);
         });
     }
 
@@ -49,7 +57,7 @@ public class TestsEmployee
         Assert.Throws<ArgumentOutOfRangeException>(() =>
         {
             var block = new HotelBlock();
-            var emp = new Cleaner("Jakub", "Ivanov", -100, block, null, Specialization.ROOMS);
+            var emp =  new Employee("Jakub", "Ivanov", -100, block, EmployeeRole.Cleaner);
         });
     }
 
@@ -57,9 +65,16 @@ public class TestsEmployee
     public void Receptionist_SetAndGetPropertiesCorrectly()
     {
         var block = new HotelBlock();
-        var rec = new Receptionist("Jakub", "Ivanov", 100, block, null,"MyKey12345");
-        rec.SetLanguages(new List<string>() { "English", "French" });
-        
+        var rec = new Employee(
+            "Jakub",
+            "Ivanov",
+            100,
+            block,
+            EmployeeRole.Receptionist
+        );
+
+        rec.DatabaseKey = "MyKey12345";
+        rec.SetLanguages(new List<string> { "English", "French" });
         Assert.That(rec.DatabaseKey, Is.EqualTo("MyKey12345"));
         CollectionAssert.Contains(rec.Languages, "English");
         CollectionAssert.Contains(rec.Languages, "French");
@@ -69,94 +84,76 @@ public class TestsEmployee
     public void Receptionist_InvalidDatabaseKey_ThrowsException()
     {
         var block = new HotelBlock();
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var rec = new Receptionist("Jakub", "Ivanov", 100, block, null,"");
-        });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var rec = new Receptionist("Jakub", "Ivanov", 100, block, null,"TheLengthIsGreaterThan20xxxxxx");
-        });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var rec = new Receptionist("Jakub", "Ivanov", 100, block, null,"key1");
-        });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var rec = new Receptionist("Jakub", "Ivanov", 100, block, null,"$NotOnlyAlphaNumeric$");
-        });
+        var emp = new Employee(
+            "Jakub",
+            "Ivanov",
+            100,
+            block,
+            EmployeeRole.Receptionist
+        );
+
+        Assert.Throws<ArgumentException>(() => emp.DatabaseKey = "");
+        Assert.Throws<ArgumentException>(() => emp.DatabaseKey = new string('A', 21));
+        Assert.Throws<ArgumentException>(() => emp.DatabaseKey = "key1");
+        Assert.Throws<ArgumentException>(() => emp.DatabaseKey = "$Invalid$");
     }
 
     [Test]
     public void Receptionist_SetNullOrEmptyLanguages_ThrowsException()
     {
         var block = new HotelBlock();
-        Assert.Throws<ArgumentNullException>(() =>
-        {
-            var rec1 = new Receptionist("Jakub", "Ivanov", 100, block, null,"MyKey12345");
-            rec1.SetLanguages(null);
-        });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var rec2 = new Receptionist("Jakub", "Ivanov", 100, block, null,"MyKey12345");
-            rec2.SetLanguages(new List<string>(){"English", ""});
-        });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var rec3 = new Receptionist("Jakub", "Ivanov", 100, block, null,"MyKey12345");
-            rec3.SetLanguages(new List<string>());
-        });
+        var emp = new Employee(
+            "Jakub",
+            "Ivanov",
+            100,
+            block,
+            EmployeeRole.Receptionist
+        );
+
+        Assert.Throws<ArgumentNullException>(() => emp.SetLanguages(null));
+        Assert.Throws<ArgumentException>(() => emp.SetLanguages(new List<string>()));
+        Assert.Throws<ArgumentException>(() => emp.SetLanguages(new List<string> { "" }));
     }
 
     [Test]
-    public void Receptionist_AddLanguage_SetPropertyCorrectly()
+    public void Receptionist_AddAndRemoveLanguage_WorksCorrectly()
     {
         var block = new HotelBlock();
-        var rec = new Receptionist("Jakub", "Ivanov", 100, block, null,"MyKey12345");
-        rec.SetLanguages(new List<string>() { "English" });
-        rec.AddLanguage("Spanish");
-        CollectionAssert.Contains(rec.Languages, "English");
-        CollectionAssert.Contains(rec.Languages, "Spanish");
+        var emp = new Employee(
+            "Jakub",
+            "Ivanov",
+            100,
+            block,
+            EmployeeRole.Receptionist
+        );
+
+        emp.SetLanguages(new List<string> { "English" });
+        emp.AddLanguage("Spanish");
+
+        CollectionAssert.Contains(emp.Languages, "Spanish");
+
+        emp.RemoveLanguage("Spanish");
+
+        CollectionAssert.DoesNotContain(emp.Languages, "Spanish");
     }
 
     [Test]
-    public void Receptionist_AddEmptyOrDublicateLanguage_ThrowsException()
+    public void Receptionist_RemoveLastLanguage_Throws()
     {
         var block = new HotelBlock();
-        var rec = new Receptionist("Jakub", "Ivanov", 100, block, null,"MyKey12345");
-        rec.SetLanguages(new List<string>() { "English" });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            rec.AddLanguage("");
-        });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            rec.AddLanguage("English");
-        });
-    }
-    
-    [Test]
-    public void Receptionist_RemoveLanguage_Correctly()
-    {
-        var block = new HotelBlock();
-        var rec = new Receptionist("Jakub", "Ivanov", 100, block, null,"MyKey12345");
-        rec.SetLanguages(new List<string>() { "English", "Spanish" });
-        rec.RemoveLanguage("Spanish");
-    }
-    
-    [Test]
-    public void Receptionist_RemoveEmptyOrLastLanguage_ThrowsException()
-    {
-        var block = new HotelBlock();
-        var rec = new Receptionist("Jakub", "Ivanov", 100, block, null,"MyKey12345");
-        rec.SetLanguages(new List<string>() { "English" });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            rec.RemoveLanguage("");
-        });
+        var emp = new Employee(
+            "Jakub",
+            "Ivanov",
+            100,
+            block,
+            EmployeeRole.Receptionist
+        );
+
+        emp.SetLanguages(new List<string> { "English" });
+
         Assert.Throws<InvalidOperationException>(() =>
         {
-            rec.RemoveLanguage("English");
+            emp.RemoveLanguage("English");
         });
     }
     
@@ -164,40 +161,55 @@ public class TestsEmployee
     public void SecurityGuard_SetAndGetPropertiesCorrectly()
     {
         var block = new HotelBlock();
-        var security = new SecurityGuard("Jakub", "Ivanov", 100, block, null,"MyKey12345", "Full access");
-        Assert.That(security.SecurityCode, Is.EqualTo("MyKey12345"));
-        Assert.That(security.AccessToWeapons, Is.EqualTo("Full access"));
+        var emp = new Employee(
+            "Jakub",
+            "Ivanov",
+            100,
+            block,
+            EmployeeRole.SecurityGuard
+        );
+
+        emp.SecurityCode = "SG12345";
+        emp.AccessToWeapons = "Full access";
+
+        Assert.That(emp.SecurityCode, Is.EqualTo("SG12345"));
+        Assert.That(emp.AccessToWeapons, Is.EqualTo("Full access"));
     }
     
     [Test]
-    public void SecurityGuard_InvalidDatabaseKey_ThrowsException()
+    public void SecurityGuard_InvalidSecurityCode_ThrowsException()
     {
         var block = new HotelBlock();
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var security = new SecurityGuard("Jakub", "Ivanov", 100, block, null,"", "Full access");
-        });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var security = new SecurityGuard("Jakub", "Ivanov", 100, block, null, new string('A', 21),"Full access");
-        });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var security = new SecurityGuard("Jakub", "Ivanov", 100, block, null,"key1", "Full access");
-        });
-        Assert.Throws<ArgumentException>(() =>
-        {
-            var security = new SecurityGuard("Jakub", "Ivanov", 100, block, null,"$NotOnlyAlphaNumeric$", "Full access");
-        });
+        var emp = new Employee(
+            "Jakub",
+            "Ivanov",
+            100,
+            block,
+            EmployeeRole.SecurityGuard
+        );
+
+        Assert.Throws<ArgumentException>(() => emp.SecurityCode = "");
+        Assert.Throws<ArgumentException>(() => emp.SecurityCode = new string('A', 21));
+        Assert.Throws<ArgumentException>(() => emp.SecurityCode = "key1");
+        Assert.Throws<ArgumentException>(() => emp.SecurityCode = "$Invalid$");
     }
+
 
     [Test]
     public void SecurityGuard_InvalidAccessToWeaponsDescription_ThrowsException()
     {
         var block = new HotelBlock();
+        var emp = new Employee(
+            "Jakub",
+            "Ivanov",
+            100,
+            block,
+            EmployeeRole.SecurityGuard
+        );
+
         Assert.Throws<ArgumentException>(() =>
         {
-            var security = new SecurityGuard("Jakub", "Ivanov", 100, block, null, "MyKe12345", new string('A', 51));
+            emp.AccessToWeapons = new string('A', 51);
         });
     }
 }

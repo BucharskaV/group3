@@ -17,7 +17,7 @@ public class TestsAssociationEmployeeHotelBlock
     public void AddEmployee_WorksCorrectly()
     {
         var block = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, block, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, block, EmployeeRole.SecurityGuard, null);
         
         Assert.That(employee.HotelBlock, Is.EqualTo(block));
         Assert.IsTrue(block.Employees.Contains(employee));
@@ -27,8 +27,8 @@ public class TestsAssociationEmployeeHotelBlock
     public void RemoveEmployee_WorksCorrectly()
     {
         var block = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, block, null,"MyKe12334552", null);
-        var employee1 = new SecurityGuard("Sasha", "Ivanov", 100, block, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, block, EmployeeRole.SecurityGuard, null);
+        var employee1 = new Employee("Sasha", "Ivanov", 100, block, EmployeeRole.SecurityGuard, null);
 
         block.RemoveEmployee(employee);
         
@@ -41,8 +41,8 @@ public class TestsAssociationEmployeeHotelBlock
     {
         var block1 = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
         var block2 = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, block1, null,"MyKe12334552", null);
-        var employee1 = new SecurityGuard("Sasha", "Ivanov", 100, block1, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, block1, EmployeeRole.SecurityGuard, null);
+        var employee1 = new Employee("Sasha", "Ivanov", 100, block1, EmployeeRole.SecurityGuard, null);
 
         employee.ChangeHotelBlock(block2);
         
@@ -61,7 +61,7 @@ public class TestsAssociationEmployeeHotelBlock
     public void AddEmployee_EmployeeAlreadyInBlock_ThrowsArgument()
     {
         var block = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, block, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, block, EmployeeRole.SecurityGuard, null);
         Assert.Throws<InvalidOperationException>(() => block.AddEmployee(employee));
     }
     
@@ -70,7 +70,7 @@ public class TestsAssociationEmployeeHotelBlock
     {
         var block = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
         var block2 = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, block, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, block, EmployeeRole.SecurityGuard, null);
         Assert.Throws<InvalidOperationException>(() => block2.AddEmployee(employee));
     }
     
@@ -87,7 +87,7 @@ public class TestsAssociationEmployeeHotelBlock
     {
         var block = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
         var block2 = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, block, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, block, EmployeeRole.SecurityGuard, null);
         Assert.Throws<InvalidOperationException>(() => block2.RemoveEmployee(employee));
     }
     
@@ -95,7 +95,7 @@ public class TestsAssociationEmployeeHotelBlock
     public void RemoveEmployee_LastEmployee_ThrowsException()
     {
         var block = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, block, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, block, EmployeeRole.SecurityGuard, null);
         
         Assert.Throws<InvalidOperationException>(() => block.RemoveEmployee(employee));
     }
@@ -105,7 +105,7 @@ public class TestsAssociationEmployeeHotelBlock
     {
         var block1 = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
         var block2 = new HotelBlock(new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), "Block A",  new Address("Warsaw", "Wola", "Kaspszaka", 55));
-        var employee = new SecurityGuard("Masha", "Ivanova", 100, block1, null,"MyKe12334552", null);
+        var employee = new Employee("Masha", "Ivanova", 100, block1, EmployeeRole.SecurityGuard, null);
         
         Assert.Throws<InvalidOperationException>(() => employee.ChangeHotelBlock(block2));
     }
