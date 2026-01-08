@@ -23,7 +23,7 @@ public class TestsAssociationBookingBill
         Hotel.ClearExtent();
 
         var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
-        var room = new Standard(101, new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), Occupancy.SINGLE, 100, true, true, true);
+        var room = new Room(101, RoomType.Standard,new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), Occupancy.SINGLE, 100, true, true, true);
         var guest = new Guest("Anna", DateTime.Now.AddYears(-25), address, "12345678901", "1234567890");
         
         _booking = new Booking(DateTime.Today.AddDays(1), DateTime.Today.AddDays(3), guest, room);

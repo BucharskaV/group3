@@ -31,7 +31,7 @@ public class TestsBooking
         var checkOut = DateTime.Today.AddDays(3);
         
         Hotel hotel = new Hotel();
-        var room = new Standard(201, hotel, Occupancy.SINGLE, 100, false, true, true);
+        var room = new Room(201, RoomType.Standard, hotel, Occupancy.SINGLE, 100, false, true, true);
         
         var booking = new Booking(checkIn, checkOut, _guest, room);
         
@@ -114,7 +114,7 @@ public class TestsBooking
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(2);
         var hotel = new Hotel();
-        var room = new Standard(101, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Room(101, RoomType.Standard ,hotel, Occupancy.SINGLE, 100, true, true, true);
         
         var booking = new Booking(checkIn, checkOut, _guest, room); 
 
@@ -129,8 +129,8 @@ public class TestsBooking
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(2);
         Hotel hotel = new Hotel();
-        var room1 = new Standard(102, hotel, Occupancy.SINGLE, 100, true, true, true);
-        var room2 = new Standard(103, hotel, Occupancy.DOUBLE, 150, true, true, true);
+        var room1 = new Room(102,RoomType.Standard ,hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room2 = new Room(103,RoomType.Standard,hotel, Occupancy.DOUBLE, 150, true, true, true);
         
         var booking = new Booking(checkIn, checkOut, _guest, room1); 
 

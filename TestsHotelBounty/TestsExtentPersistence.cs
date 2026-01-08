@@ -32,7 +32,7 @@ namespace TestsHotelBounty
         {
             var address = new Address("City", "District", "Street", 1);
             var hotel = new Hotel("Hotel Bounty", "Warsaw", "123456789", 5);
-            var room = new Standard(101, hotel, Occupancy.DOUBLE, 100, true, true, true);
+            var room = new Room(101, RoomType.Standard ,hotel, Occupancy.DOUBLE, 100, true, true, true);
             var guest = new Guest("Test Guest", DateTime.Now.AddYears(-25), address, "12345678901", "1234567890");
             
             var booking = new Booking(DateTime.Now.AddDays(1), DateTime.Now.AddDays(5), guest, room);

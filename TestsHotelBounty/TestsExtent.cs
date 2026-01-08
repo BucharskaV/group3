@@ -34,10 +34,12 @@ public class TestsExtent
         var block1 = new HotelBlock(hotel, "Block A", address);
         var block2 = new HotelBlock(hotel, "Block B", address);
         
-        var r1 = new Deluxe(101, hotel, Occupancy.TRIPLE, 300.50, true, true, true, true, true);
-        var r2 = new NoPets(102, hotel, Occupancy.DOUBLE, 130, true, true, true, true);
-        var r3 = new PetFriendly(103, hotel, Occupancy.DOUBLE, 130, false, false, false, "Meat", 2);
-        var r4 = new Standard(104, hotel, Occupancy.DOUBLE, 100.99, false, false, false);
+        var r1 = new Room(101, RoomType.Deluxe,hotel, Occupancy.TRIPLE, 300.50, true, true, true, true, true);
+        var r2 = new Room(401, RoomType.NoPets, hotel, Occupancy.DOUBLE, 120, false, false, true,
+            allergyFriendly: true);
+        var r3 = new Room(301, RoomType.PetFriendly, hotel, Occupancy.TRIPLE, 200, true, true, true,
+            petFeeders: "Meat", maxPetsAllowed: 2);
+        var r4 = new Room(104, RoomType.Standard,hotel, Occupancy.DOUBLE, 100.99, false, false, false);
         
         var e1 = new Employee("Jakub", "Ivanov", 100, block1, EmployeeRole.Cleaner, null);
         var e2 = new Employee("Bob", "Ivanov", 100, block2, EmployeeRole.Cleaner | EmployeeRole.SecurityGuard, null);
@@ -76,10 +78,12 @@ public class TestsExtent
         var block1 = new HotelBlock(hotel, "Block A", address);
         var block2 = new HotelBlock(hotel, "Block B", address);
         
-        var r1 = new Deluxe(101, hotel, Occupancy.TRIPLE, 300.50, true, true, true, true, true);
-        var r2 = new NoPets(102, hotel, Occupancy.DOUBLE, 130, true, true, true, true);
-        var r3 = new PetFriendly(103, hotel, Occupancy.DOUBLE, 130, false, false, false, "Meat", 2);
-        var r4 = new Standard(104, hotel, Occupancy.DOUBLE, 100.99, false, false, false);
+        var r1 = new Room(101, RoomType.Deluxe,hotel, Occupancy.TRIPLE, 300.50, true, true, true, true, true);
+        var r2 = new Room(401, RoomType.NoPets, hotel, Occupancy.DOUBLE, 120, false, false, true,
+            allergyFriendly: true);
+        var r3 = new Room(301, RoomType.PetFriendly, hotel, Occupancy.TRIPLE, 200, true, true, true,
+            petFeeders: "Meat", maxPetsAllowed: 2);
+        var r4 = new Room(104, RoomType.Standard,hotel, Occupancy.DOUBLE, 100.99, false, false, false);
         
         var e1 = new Employee("Jakub", "Ivanov", 100, block1, EmployeeRole.Cleaner, null);
         var e2 = new Employee("Bob", "Ivanov", 100, block2, EmployeeRole.Cleaner | EmployeeRole.SecurityGuard, null);

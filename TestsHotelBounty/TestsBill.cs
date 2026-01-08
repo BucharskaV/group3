@@ -35,7 +35,7 @@ public class TestsBill
         var checkOut = DateTime.Today.AddDays(4); // 3 nights
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
 
-        var room = new Standard(201, hotel, Occupancy.SINGLE, 100, false, true, true);
+        var room = new Room(201, RoomType.Standard,hotel, Occupancy.SINGLE, 100, false, true, true);
         
         var booking = new Booking(checkIn, checkOut, _guest, room);
 
@@ -75,7 +75,7 @@ public class TestsBill
         var checkOut = DateTime.Today.AddDays(3); // 2 nights
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
 
-        var room = new Standard(201, hotel, Occupancy.SINGLE, 100, false, true, true);
+        var room = new Room(201, RoomType.Standard,hotel, Occupancy.SINGLE, 100, false, true, true);
         var booking = new Booking(checkIn, checkOut, _guest, room);
         
         var newCheckOut = checkOut.AddDays(1); // 3 nights
