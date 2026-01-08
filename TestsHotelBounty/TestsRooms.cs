@@ -10,8 +10,9 @@ public class TestsRooms
     public void CreateStandardRoom_ValidParameters_ShouldSetProperties()
     {
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var room = new Standard(
+        var room = new Room(
             roomNumber: 201,
+            type: RoomType.Standard,
             hotel: hotel,
             occupancy: Occupancy.SINGLE,
             price: 100,
@@ -35,14 +36,14 @@ public class TestsRooms
     {
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
         Assert.Throws<ArgumentException>(() =>
-            new Standard(201, hotel, Occupancy.SINGLE, -10, true, true, true));
+            new Room(201, RoomType.Standard,hotel, Occupancy.SINGLE, -10, true, true, true));
     }
 
     [Test]
     public void ChangeCleaningStatus_ShouldUpdateValue()
     {
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var room = new Standard( 201, hotel, Occupancy.SINGLE, 80, false, false, true);
+        var room = new Room( 201, RoomType.Standard,hotel, Occupancy.SINGLE, 80, false, false, true);
 
         room.IsCleaned = true;
 
@@ -53,7 +54,7 @@ public class TestsRooms
     public void ChangeIsAvailable_ShouldUpdateValue()
     {
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var room = new Standard( 201, hotel, Occupancy.SINGLE, 80, false, false, true);
+        var room = new Room( 201, RoomType.Standard,hotel, Occupancy.SINGLE, 80, false, false, true);
 
         room.IsAvailable = true;
 
@@ -65,8 +66,9 @@ public class TestsRooms
     public void DeluxeRoom_SetAndGetPropertiesCorrectly()
     {
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var deluxe = new Deluxe(
+        var deluxe = new Room(
             roomNumber: 201,
+            type: RoomType.Deluxe,
             hotel: hotel,
             occupancy: Occupancy.SINGLE,
             price: 250,
@@ -74,17 +76,30 @@ public class TestsRooms
             isCleaned: true,
             isAvailable: true,
             terrace: true,
-            extraBad: false
+            extraBed: false
         );
 
         Assert.That(deluxe.Terrace, Is.EqualTo(true));
-        Assert.That(deluxe.ExtraBad, Is.EqualTo(false));
+        Assert.That(deluxe.ExtraBed, Is.EqualTo(false));
     }
     
     [Test]
     public void DeluxeRoom_SetMiniBarFillingCorrectly()
     {
-        var deluxe = new Deluxe();
+        var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
+        var deluxe = new Room(
+            roomNumber: 201,
+            type: RoomType.Deluxe,
+            hotel: hotel,
+            occupancy: Occupancy.SINGLE,
+            price: 250,
+            climatization: true,
+            isCleaned: true,
+            isAvailable: true,
+            terrace: true,
+            extraBed: false
+        );
+
     
         deluxe.SetMiniBarFilling(new List<string> { "Water", "Soda" });
     
@@ -97,7 +112,20 @@ public class TestsRooms
     [Test]
     public void DeluxeRoom_SetMiniBar_EmptyList_ThrowsException()
     {
-        var deluxe = new Deluxe();
+        var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
+        var deluxe = new Room(
+            roomNumber: 201,
+            type: RoomType.Deluxe,
+            hotel: hotel,
+            occupancy: Occupancy.SINGLE,
+            price: 250,
+            climatization: true,
+            isCleaned: true,
+            isAvailable: true,
+            terrace: true,
+            extraBed: false
+        );
+
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -108,7 +136,20 @@ public class TestsRooms
     [Test]
     public void DeluxeRoom_SetMiniBar_NullItem_ThrowsException()
     {
-        var deluxe = new Deluxe();
+        var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
+        var deluxe = new Room(
+            roomNumber: 201,
+            type: RoomType.Deluxe,
+            hotel: hotel,
+            occupancy: Occupancy.SINGLE,
+            price: 250,
+            climatization: true,
+            isCleaned: true,
+            isAvailable: true,
+            terrace: true,
+            extraBed: false
+        );
+
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -119,7 +160,20 @@ public class TestsRooms
     [Test]
     public void DeluxeRoom_SetMiniBar_WhitespaceItem_ThrowsException()
     {
-        var deluxe = new Deluxe();
+        var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
+        var deluxe = new Room(
+            roomNumber: 201,
+            type: RoomType.Deluxe,
+            hotel: hotel,
+            occupancy: Occupancy.SINGLE,
+            price: 250,
+            climatization: true,
+            isCleaned: true,
+            isAvailable: true,
+            terrace: true,
+            extraBed: false
+        );
+
 
         Assert.Throws<ArgumentException>(() =>
         {
@@ -131,8 +185,9 @@ public class TestsRooms
     public void PetFriendly_SetAndGetPropertiesCorrectly()
     {
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var room = new PetFriendly(
+        var room = new Room(
             roomNumber: 501,
+            type: RoomType.PetFriendly,
             hotel: hotel,
             occupancy: Occupancy.SINGLE,
             price: 120,
@@ -160,12 +215,12 @@ public class TestsRooms
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
         Assert.Throws<ArgumentException>(() =>
         {
-            var room = new PetFriendly(201, hotel, Occupancy.SINGLE, 100, true, true, true, "", 1);
+            var room = new Room(201, RoomType.PetFriendly ,hotel, Occupancy.SINGLE, 100, true, true, true, petFeeders: "", maxPetsAllowed:1);
         });
 
         Assert.Throws<ArgumentException>(() =>
         {
-            var room = new PetFriendly(202, hotel, Occupancy.SINGLE, 100, true, true, true, null, 1);
+            var room = new Room(202, RoomType.PetFriendly,hotel, Occupancy.SINGLE, 100, true, true, true, petFeeders: null, maxPetsAllowed: 1);
         });
     }
 
@@ -176,17 +231,18 @@ public class TestsRooms
 
         Assert.Throws<ArgumentException>(() =>
         {
-            var room = new PetFriendly(201, hotel, Occupancy.SINGLE, 100, true, true, true, "Feeder", 4);
+            var room = new Room(201, RoomType.PetFriendly,hotel, Occupancy.SINGLE, 100, true, true, true, petFeeders: "Feeder", maxPetsAllowed: 4);
         });
     }
 
     [Test]
-    public void PetFriendly_MaxPetsAllowed_StaticValueChanges()
+    public void PetFriendly_MaxPetsAllowed_InstanceValueChanges()
     {
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var room = new PetFriendly(302, hotel, Occupancy.SINGLE, 100, true, true, true, "Feeder", 2);
-        room.MaxPetsAllowed = 3; 
-
+        var room = new Room(201, RoomType.PetFriendly, hotel, Occupancy.SINGLE, 100, true, true, true, 
+            petFeeders: "Feeder", maxPetsAllowed: 2);
+    
+        room.MaxPetsAllowed = 3;
         Assert.That(room.MaxPetsAllowed, Is.EqualTo(3));
     }
     
@@ -195,14 +251,15 @@ public class TestsRooms
     {
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
 
-        var room = new NoPets(
+        var room = new Room(
             roomNumber: 401,
+            type: RoomType.NoPets,
             hotel: hotel,
             occupancy: Occupancy.SINGLE,
             price: 150,
             climatization: true,
             isCleaned: true,
-            isAvailsble: true,
+            isAvailable: true,
             allergyFriendly: true
         );
 
@@ -222,7 +279,8 @@ public class TestsRooms
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
 
         Assert.Throws<ArgumentException>(() =>
-            new NoPets(401,hotel, Occupancy.SINGLE, -50, true, true, true, true)
+           new Room(401, RoomType.NoPets, hotel, Occupancy.DOUBLE, -120, false, false, true,
+                allergyFriendly: true)
         );
     }
     

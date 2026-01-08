@@ -29,7 +29,7 @@ public class TestsNewExceptions
         _address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
         _guest = new Guest("Test Guest", DateTime.Now.AddYears(-25), _address, "12345678901", "1234567890");
         _hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        _room = new Standard(101, _hotel, Occupancy.SINGLE, 100, false, true, true);
+        _room = new Room(101, RoomType.Standard,_hotel, Occupancy.SINGLE, 100, false, true, true);
     }
     
 

@@ -20,7 +20,7 @@ public class TestsAssociationBookingGuest
         Hotel.ClearExtent();
         
         _address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
-        _room = new Standard(101, new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), Occupancy.SINGLE, 100, true, true, true);
+        _room = new Room(101, RoomType.Standard,new Hotel("Hotel Bounty", "Warsaw", "799039000", 5), Occupancy.SINGLE, 100, true, true, true);
     }
 
     [Test]

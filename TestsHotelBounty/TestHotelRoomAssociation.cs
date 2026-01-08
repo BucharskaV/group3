@@ -19,7 +19,7 @@ public class TestHotelRoomAssociation
     [Test]
     public void AddRoom_ShouldCreateBidirectionalReference()
     {
-        var room = new Room(101, _hotel1, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Room(101, RoomType.Standard,_hotel1, Occupancy.SINGLE, 100, true, true, true);
         
         _hotel1.AddRoom(room);
         
@@ -31,7 +31,7 @@ public class TestHotelRoomAssociation
     [Test]
     public void RemoveRoom_ShouldDeleteBidirectionalReference()
     {
-        var room = new Room(102, _hotel1, Occupancy.DOUBLE, 150, true, true, true);
+        var room = new Room(102, RoomType.Standard,_hotel1, Occupancy.DOUBLE, 150, true, true, true);
         _hotel1.AddRoom(room);
         
         _hotel1.RemoveRoom(102);
@@ -43,7 +43,7 @@ public class TestHotelRoomAssociation
     [Test]
     public void MoveRoomBetweenHotels_ShouldUpdateReferences()
     {
-        var room = new Room(103, _hotel1, Occupancy.DOUBLE, 120, true, true, true);
+        var room = new Room(103, RoomType.Standard,_hotel1, Occupancy.DOUBLE, 120, true, true, true);
         
         room.SetHotel(_hotel2);
         
@@ -64,8 +64,8 @@ public class TestHotelRoomAssociation
     [Test]
     public void AddRoom_ShouldThrow_WhenRoomNumberAlreadyExists()
     {
-        var room1 = new Room(104, _hotel1, Occupancy.SINGLE, 80, false, true, true);
-        var room2 = new Room(104, _hotel2, Occupancy.DOUBLE, 120, true, true, true); // different hotel
+        var room1 = new Room(104, RoomType.Standard,_hotel1, Occupancy.SINGLE, 80, false, true, true);
+        var room2 = new Room(104, RoomType.Standard,_hotel2, Occupancy.DOUBLE, 120, true, true, true); // different hotel
         
         var ex = Assert.Throws<InvalidOperationException>(() => room2.SetHotel(_hotel1));
         Assert.AreEqual("Room 104 already exists in this hotel.", ex.Message);
@@ -83,7 +83,7 @@ public class TestHotelRoomAssociation
     public void CreatingRoom_ShouldThrow_WhenHotelIsNull()
     {
         var ex = Assert.Throws<ArgumentNullException>(() =>
-            new Room(105, null, Occupancy.SINGLE, 100, true, true, true)
+            new Room(105, RoomType.Standard,null, Occupancy.SINGLE, 100, true, true, true)
         );
         Assert.AreEqual("When creating the room the Hotel cannot be null", ex.ParamName);
     }
@@ -91,7 +91,7 @@ public class TestHotelRoomAssociation
     [Test]
     public void ChangeRoomNumber_ShouldUpdateHotelBinding()
     {
-        var room = new Room(201, _hotel1, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Room(201, RoomType.Standard,_hotel1, Occupancy.SINGLE, 100, true, true, true);
 
         room.RoomNumber = 202;
 

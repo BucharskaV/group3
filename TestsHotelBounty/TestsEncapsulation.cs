@@ -83,7 +83,7 @@ public class TestsEncapsulation
         Booking.ClearExtent();
         var address = new Address("Warsaw", "Wola", "Kaspszaka", 55);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var room = new Standard(101, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Room(101, RoomType.Standard,hotel, Occupancy.SINGLE, 100, true, true, true);
         var guest = new Guest("Test Guest", DateTime.Today.AddYears(-25), address, "12345678901", "1234567890");
 
         var checkIn = DateTime.Today.AddDays(1);
@@ -113,7 +113,7 @@ public class TestsEncapsulation
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Room(202, RoomType.Standard,hotel, Occupancy.SINGLE, 100, true, true, true);
         var address = new Address("C", "D", "S", 1);
         var guest = new Guest("G", DateTime.Today.AddYears(-25), address, "12345678901", "0000000001");
         
@@ -144,7 +144,7 @@ public class TestsEncapsulation
         var checkIn = DateTime.Today.AddDays(1);
         var checkOut = DateTime.Today.AddDays(3);
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var room = new Standard(202, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var room = new Room(202, RoomType.Standard,hotel, Occupancy.SINGLE, 100, true, true, true);
         var address = new Address("C", "D", "S", 1);
         var guest = new Guest("G", DateTime.Today.AddYears(-25), address, "12345678901", "0000000001");
         
@@ -170,7 +170,7 @@ public class TestsEncapsulation
     {
         Room.ClearExtent();
         var hotel = new Hotel("Hotel Bounty", "Warsaw", "799039000", 5);
-        var r1 = new Standard(201, hotel, Occupancy.SINGLE, 100, true, true, true);
+        var r1 = new Room(201, RoomType.Standard,hotel, Occupancy.SINGLE, 100, true, true, true);
         
         r1.Price = 150;
 
@@ -180,7 +180,7 @@ public class TestsEncapsulation
         var extent = Room.GetExtent();
         Assert.Throws<NotSupportedException>(() =>
         {
-            ((ICollection<Room>)extent).Add(new Standard(202, hotel, Occupancy.DOUBLE, 200, true, true, true));
+            ((ICollection<Room>)extent).Add(new Room(202, RoomType.Standard,hotel, Occupancy.DOUBLE, 200, true, true, true));
         });
     }
 

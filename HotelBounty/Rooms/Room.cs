@@ -6,12 +6,9 @@ using HotelBounty.Enums;
 namespace HotelBounty.Rooms;
 
 [Serializable]
-[XmlInclude(typeof(PetFriendly))]
-[XmlInclude(typeof(NoPets))]
-[XmlInclude(typeof(Deluxe))]
-[XmlInclude(typeof(Standard))]
-public class Room
+public  class Room
 {
+    
     private static List<Room> _roomList = new List<Room>();
     private static int nextId = 1;
     
@@ -164,24 +161,96 @@ public class Room
         }
     }
     
-    public Room() { }
-
-    public Room(int roomNumber, Hotel hotel, Occupancy occupancy, double price, bool climatization, bool isCleaned, bool isAvailable)
-    { 
-        if(hotel == null) throw new ArgumentNullException("When creating the room the Hotel cannot be null");
+   // // Deluxe fields
+   public bool Terrace { get; set; } = false;
+   
+   public bool ExtraBed { get; set; } = false;
+   
+    public List<string> MiniBarFilling { get; private set; } = new List<string>();
+    
+    public void SetMiniBarFilling(IEnumerable<string> filling)
+    {
+        if (filling == null)
+            throw new ArgumentNullException(nameof(filling));
+   
+        var list = new List<string>();
+        foreach (var f in filling)
+        {
+            if (string.IsNullOrWhiteSpace(f))
+                throw new ArgumentException("The mini bar filling cannot be null, empty, or whitespace.");
+            list.Add(f);
+        }
+   
+        if (list.Count == 0)
+            throw new ArgumentException("At least one mini bar filling must be added.");
         
+        MiniBarFilling = list;
+        
+    }
+    
+    // PetFriendly-specific
+    public string PetFeeders { get; set; } = null!;
+    public int MaxPetsAllowed { get; set; } = 3;
+    
+
+    // NoPets-specific
+    public bool AllergyFriendly { get; set; } = false;
+    
+    public RoomType Type { get; set; }
+
+    public Room(int roomNumber, RoomType type, Hotel hotel, Occupancy occupancy,
+        double price, bool climatization, bool isCleaned, bool isAvailable,
+        bool terrace = false, bool extraBed = false,
+        string? petFeeders = null, int maxPetsAllowed = 3,
+        bool allergyFriendly = false)
+    {
+        if (hotel == null)
+            throw new ArgumentNullException(nameof(hotel), "When creating the room, the Hotel cannot be null");
+
         Id = nextId++;
         RoomNumber = roomNumber;
+        Type = type;
         Occupancy = occupancy;
         Price = price;
         Climatization = climatization;
         IsCleaned = isCleaned;
         IsAvailable = isAvailable;
+
+        if (type == RoomType.Deluxe)
+        {
+            Terrace = terrace;
+            ExtraBed = extraBed;
+        }
         
+
+        if (type == RoomType.PetFriendly)
+        {
+            if (string.IsNullOrWhiteSpace(petFeeders))
+                throw new ArgumentException("Pet feeders must be provided for PetFriendly rooms.");
+    
+            if (maxPetsAllowed > 3)
+                throw new ArgumentException("The amount of pets cannot be more than 3");
+
+            PetFeeders = petFeeders;
+            MaxPetsAllowed = maxPetsAllowed;
+        }
+        
+        
+        if (type == RoomType.NoPets)
+        {
+            AllergyFriendly = allergyFriendly;
+        }
+
+
         SetHotel(hotel);
         Add(this);
     }
-    
+
+    public Room()
+    {
+    }
+
+
     public static List<Room> GetListOfAvailableRooms()
     {
         return _roomList
